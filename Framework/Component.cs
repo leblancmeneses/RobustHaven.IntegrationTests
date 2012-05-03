@@ -1,7 +1,7 @@
 ﻿namespace RobustHaven.IntegrationTests.Framework
 {
-    public abstract class Component
-    {
-        abstract public void Accept(AVisitor visitor);
-    }
+	public abstract class Component
+	{
+		public abstract void Accept(AVisitor visitor);
+	}
 }

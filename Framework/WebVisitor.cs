@@ -3,52 +3,51 @@ using System.Collections.Generic;
 
 namespace RobustHaven.IntegrationTests.Framework
 {
-    public abstract class WebVisitor : AVisitor, IDisposable
-    {
-        #region Delegates
+	public abstract class WebVisitor : AVisitor, IDisposable
+	{
+		#region Delegates
 
-        public delegate void Run();
+		public delegate void Run();
 
-        #endregion
+		#endregion
 
-        protected readonly Stack<Run> stack = new Stack<Run>();
+		protected readonly Stack<Run> stack = new Stack<Run>();
 
-        public void Execute()
-        {
-            while (stack.Count > 0)
-            {
-                Run run = stack.Pop();
-                run();
-            }
-        }
+		#region IDisposable Members
 
+		public abstract void Dispose();
 
-        public void VisitEnter(Sequence sequence)
-        {
-        }
+		#endregion
 
-        public void VisitExecute(Sequence sequence)
-        {
-        }
-
-        public void VisitLeave(Sequence sequence)
-        {
-            Run localRight = stack.Pop();
-            Run localLeft = stack.Pop();
-            stack.Push(
-                delegate
-                {
-                    localLeft();
-                    localRight();
-                }
-                );
-        }
+		public void Execute()
+		{
+			while (stack.Count > 0)
+			{
+				Run run = stack.Pop();
+				run();
+			}
+		}
 
 
-        #region IDisposable Members
+		public void VisitEnter(Sequence sequence)
+		{
+		}
 
-        public abstract void Dispose();
+		public void VisitExecute(Sequence sequence)
+		{
+		}
 
-        #endregion
-    }
+		public void VisitLeave(Sequence sequence)
+		{
+			Run localRight = stack.Pop();
+			Run localLeft = stack.Pop();
+			stack.Push(
+				delegate
+					{
+						localLeft();
+						localRight();
+					}
+				);
+		}
+	}
 }
