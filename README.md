@@ -29,8 +29,8 @@ RobustHaven.IntegrationTests is used for integration tests with WatiN or Seleniu
                         { 
                             Item = String.Format("{0}Quote{1}", testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
                             ItemFullName = String.Format("{0} {1}Quote{2}", DateTime.Now.DayOfWeek, testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
-                            State = "Arkansas",
-                            IsPolicy = false
+                            XXProperty = "Dummy Example",
+                            IsEnabled = false
                         },
                         new CheckViewItemsMultiCompany()
                         {
