@@ -1,8 +1,13 @@
 RobustHaven.IntegrationTests
 ============================
 
-RobustHaven.IntegrationTests is used for integration tests with WatiN or Selenium
+RobustHaven.IntegrationTests is used for integration tests with WatiN or Selenium.
 
+One of the bigest problems with integration tests is a way to seperate data from actual workflow that needs to execute.
+
+This framework allows you to create a composite of your workflow and execute the workflow for each row contained in a seperate csv file.
+
+Behind the scenes the magic is behind a fluent interface using composition and a hierarchical visitor pattern.
 
 <code>
 
@@ -27,7 +32,7 @@ RobustHaven.IntegrationTests is used for integration tests with WatiN or Seleniu
                     new Sequence (
                         new AddDetailItem() 
                         { 
-                            Item = String.Format("{0}Quote{1}", testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
+                            Item = String.Format("{0}xxxx{1}", testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
                             ItemFullName = String.Format("{0} {1}Quote{2}", DateTime.Now.DayOfWeek, testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
                             XXProperty = "Dummy Example",
                             IsEnabled = false
