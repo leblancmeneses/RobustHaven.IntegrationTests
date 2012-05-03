@@ -5,6 +5,7 @@ RobustHaven.IntegrationTests is used for integration tests with WatiN or Seleniu
 
 
 <code>
+
         [TestMethod]
         [DeploymentItem(".IntegrationTests\\TestData\\CheckItemsMultiCompany.csv")]
         [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "|DataDirectory|\\CheckItemsMultiCompany.csv", "CheckItemsMultiCompany#csv", DataAccessMethod.Sequential)]
@@ -43,4 +44,5 @@ RobustHaven.IntegrationTests is used for integration tests with WatiN or Seleniu
                 context.Execute();
             }
         }
+
 </code>
