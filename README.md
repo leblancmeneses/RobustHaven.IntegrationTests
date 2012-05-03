@@ -7,7 +7,7 @@ One of the bigest problems with integration tests is a way to seperate data from
 
 This framework allows you to create a composite of your workflow and execute the workflow for each row contained in a seperate csv file.
 
-Behind the scenes the magic is behind a fluent interface using composition and a hierarchical visitor pattern.
+Behind the scenes is a fluent interface using composition and a hierarchical visitor pattern.
 
 <code>
 
