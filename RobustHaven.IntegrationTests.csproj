@@ -41,7 +41,7 @@
     <Compile Include="Framework\Component.cs" />
     <Compile Include="Framework\Composite.cs" />
     <Compile Include="Framework\Sequence.cs" />
-    <Compile Include="Framework\WebVisitor.cs" />
+    <Compile Include="Framework\BaseVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

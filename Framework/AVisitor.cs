@@ -17,7 +17,7 @@ namespace RobustHaven.IntegrationTests.Framework
 			}
 			else
 			{
-				throw new Exception("Visitor does not implement the Visit method for the type: " + component.GetType());
+				throw new Exception("Visitor does not implement the VisitEnter method for the type: " + component.GetType());
 			}
 		}
 
@@ -31,7 +31,7 @@ namespace RobustHaven.IntegrationTests.Framework
 			}
 			else
 			{
-				throw new Exception("Visitor does not implement the Visit method for the type: " + component.GetType());
+				throw new Exception("Visitor does not implement the VisitExecute method for the type: " + component.GetType());
 			}
 		}
 
@@ -45,7 +45,7 @@ namespace RobustHaven.IntegrationTests.Framework
 			}
 			else
 			{
-				throw new Exception("Visitor does not implement the Visit method for the type: " + component.GetType());
+				throw new Exception("Visitor does not implement the VisitLeave method for the type: " + component.GetType());
 			}
 		}
 

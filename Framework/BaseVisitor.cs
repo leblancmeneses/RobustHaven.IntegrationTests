@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RobustHaven.IntegrationTests.Framework
 {
-	public abstract class WebVisitor : AVisitor, IDisposable
+	public abstract class BaseVisitor : AVisitor, IDisposable
 	{
 		#region Delegates
 
@@ -11,7 +11,7 @@ namespace RobustHaven.IntegrationTests.Framework
 
 		#endregion
 
-		protected readonly Stack<Run> stack = new Stack<Run>();
+		protected readonly Stack<Run> Stack = new Stack<Run>();
 
 		#region IDisposable Members
 
@@ -19,13 +19,22 @@ namespace RobustHaven.IntegrationTests.Framework
 
 		#endregion
 
-		public void Execute()
+		public virtual void Execute()
 		{
-			while (stack.Count > 0)
+			while(Stack.Count > 1)
 			{
-				Run run = stack.Pop();
-				run();
+				var localRight = Stack.Pop();
+				var localLeft = Stack.Pop();
+					Stack.Push(() =>
+					{
+						localLeft();
+						localRight();
 			}
+				);
+			}
+
+			var run = Stack.Peek();
+			run();
 		}
 
 
@@ -39,11 +48,9 @@ namespace RobustHaven.IntegrationTests.Framework
 
 		public void VisitLeave(Sequence sequence)
 		{
-			Run localRight = stack.Pop();
-			Run localLeft = stack.Pop();
-			stack.Push(
-				delegate
-					{
+			var localRight = Stack.Pop();
+			var localLeft = Stack.Pop();
+			Stack.Push( () => {
 						localLeft();
 						localRight();
 					}

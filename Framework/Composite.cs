@@ -6,8 +6,9 @@ namespace RobustHaven.IntegrationTests.Framework
 	{
 		public abstract List<Component> Children { get; }
 
-		public void Sequence(Component c)
+		public Sequence Sequence(Component other)
 		{
+			return new Sequence(this, other);
 		}
 
 
