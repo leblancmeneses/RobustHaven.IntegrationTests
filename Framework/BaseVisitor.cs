@@ -38,15 +38,15 @@ namespace RobustHaven.IntegrationTests.Framework
 		}
 
 
-		public void VisitEnter(Sequence sequence)
+		public virtual void VisitEnter(Sequence sequence)
 		{
 		}
 
-		public void VisitExecute(Sequence sequence)
+		public virtual void VisitExecute(Sequence sequence)
 		{
 		}
 
-		public void VisitLeave(Sequence sequence)
+		public virtual void VisitLeave(Sequence sequence)
 		{
 			var localRight = Stack.Pop();
 			var localLeft = Stack.Pop();
