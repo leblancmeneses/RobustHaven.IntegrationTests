@@ -9,49 +9,76 @@ This framework allows you to create a composite of your workflow and execute the
 
 Behind the scenes is a fluent interface using composition and a hierarchical visitor pattern.
 
-<code>
 
-        [TestMethod]
-        [DeploymentItem(".IntegrationTests\\TestData\\CheckItemsMultiCompany.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "|DataDirectory|\\CheckItemsMultiCompany.csv", "CheckItemsMultiCompany#csv", DataAccessMethod.Sequential)]
-        public void Check_View_Items_MultiCompany()
-        {
-			var workflow = new Sequence(
-								new Login()
-								{
-									UserName = testContext.DataRow["UserName"].ToString(),
-									Password = password
-								},
-								new AddItem()
-								{
-									CompanyName = testContext.DataRow["CompanyName"].ToString(),
-									FirstName = DateTime.Now.DayOfWeek.ToString(),
-									LastName = String.Format("{0}Quote{1}", testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
-									TaxId = taxId.Next(100000000, 999999999).ToString()
-								}
-						)
-						.Sequence(
-							new AddDetailItem()
-							{
-								Item = String.Format("{0}xxxx{1}", testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
-								ItemFullName = String.Format("{0} {1}Quote{2}", DateTime.Now.DayOfWeek, testContext.DataRow["ItemName"], DateTime.Now.DayOfYear),
-								XXProperty = "Dummy Example",
-								IsEnabled = false
-							}
-						)
-						.Sequence(
-							new CheckViewItemsMultiCompany()
-							{
-								CompanyName = testContext.DataRow["CompanyName"].ToString(),
-								HasAccessOne = Convert.ToBoolean(testContext.DataRow["HasAccessOne"].ToString()),
-								HasAccessTwo = Convert.ToBoolean(testContext.DataRow["HasAccessTwo"].ToString())
-							}
-						);
+### Sample 001: viewmodel referenced by multiple flows allows disconnected flows to interact as expected
 
-            using (var context = workflow.Setup(config))
-            {
-                context.Execute();
-            }
-        }
+flows can be composites (nested flows) - logins, partial views
 
-</code>
+	[Test]
+	public void Delete_Template()
+	{
+		var viewModel = new TemplateViewModel {Name = Guid.NewGuid().ToString()};
+
+		ALeaf step1 = FlowFactory.TemplateFlows.CreateTemplate(viewModel);
+
+		ALeaf step2 = FlowFactory.TemplateFlows.DeleteTemplate(viewModel);
+
+		var workflow = new Sequence(step1, step2);
+
+		workflow.Execute(_visitor);
+	}
+	
+	
+	
+### Sample 001: CreateTemplate.cs
+
+	namespace IntegrationTests.TemplateFlows
+	{
+		public class CreateTemplate : WebTestLeaf<TemplateViewModel>
+		{
+			public override void Execute(WebTestContext ctx)
+			{
+				ConsoleLogger logger = ctx.Logger;
+				IWebDriver browser = ctx.Driver;
+				string ngController = "TemplateController";
+
+				string startingUrl = ctx.ToAbsoluteUrl<TemplateController>(t => t.Index());
+				logger.Given("the user is at {0}", startingUrl);
+				browser.Navigate().GoToUrl(startingUrl);
+
+				int initialGridTotal = browser.kGridTotal();
+
+				logger.When("the user clicks on 'New Template' button.");
+				IWebElement newTemplateBtn = browser.BsButton("New Template");
+				newTemplateBtn.Click();
+
+				IWebElement templateDiv = browser.FindByNgController(browser, ngController);
+
+				IWebElement nameTxtBx = browser.FindElement(templateDiv, ctx.ById<TemplateViewModel>(t => t.Name));
+				IWebElement focusedNode = browser.FocusedElement();
+				Assert.IsTrue(focusedNode.Equals(nameTxtBx), "focused element when creating a template should be name.");
+
+
+				IWebElement saveChangesBtn = templateDiv.BsButton("Save Changes");
+				Assert.IsFalse(saveChangesBtn.Enabled, "'Save Changes' button should be disabled when template name is empty.");
+
+
+				logger.And("the user types the template name '{0}'", Model.Name);
+				nameTxtBx.SendKeys(Model.Name);
+				Assert.IsTrue(saveChangesBtn.Enabled, "'Save Changes' button should be enabled when validation is successful.");
+				saveChangesBtn.Click();
+
+
+				var result = browser.NgScope<TemplateViewModel>(templateDiv, "Data", t => t.Id != 0);
+				Mapper.Map(result, Model);
+
+				logger.Then("the user can save a template (Id == {0}).", Model.Id);
+
+				browser.Navigate().GoToUrl(startingUrl);
+
+				int finalGridTotal = browser.kGridTotal();
+				Assert.IsTrue(initialGridTotal < finalGridTotal, "Creating a template should increase the grid paging total.");
+			}
+		}
+	}
+
