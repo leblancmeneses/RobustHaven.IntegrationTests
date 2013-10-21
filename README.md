@@ -3,11 +3,13 @@ RobustHaven.IntegrationTests
 
 RobustHaven.IntegrationTests is used for integration tests with WatiN or Selenium.
 
-One of the bigest problems with integration tests is a way to seperate data from actual workflow that needs to execute.
+One of the bigest problems with automated integration tests is a way to seperate data from actual workflow that needs to execute.
 
-This framework allows you to create a composite of your workflow and execute the workflow for each row contained in a seperate csv file.
+This framework allows you to create a composite of your workflow and execute the workflow in the correct order while sharing strongly typed state.
 
 Behind the scenes is a fluent interface using composition and a hierarchical visitor pattern.
+
+Extensions contained in these packages allow you to interact with components found in AngularJs (NgExtensions), Kendo (KendoExtensions), and Bootstrap.
 
 
 ### Sample 001: viewmodel referenced by multiple flows allows disconnected flows to interact as expected

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using RobustHaven.IntegrationTests.Framework;
 
 namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
@@ -17,10 +18,10 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			if (IsSubclassOfRawGeneric(typeof (WebTestLeaf<>), template.GetType()))
 			{
 				Stack.Push(() =>
-				{
-					var methodInfo = template.GetType().GetMethod("Execute");
-					methodInfo.Invoke(template, new object[]{_testContext});
-				});
+					{
+						MethodInfo methodInfo = template.GetType().GetMethod("Execute");
+						methodInfo.Invoke(template, new object[] {_testContext});
+					});
 			}
 			else
 			{
@@ -33,11 +34,11 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 		}
 
 		//http://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class
-		static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
+		private static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
 		{
-			while (toCheck != null && toCheck != typeof(object))
+			while (toCheck != null && toCheck != typeof (object))
 			{
-				var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+				Type cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
 				if (generic == cur)
 				{
 					return true;
