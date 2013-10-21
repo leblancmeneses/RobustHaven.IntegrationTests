@@ -1,7 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobustHaven.IntegrationTests", "RobustHaven.IntegrationTests.csproj", "{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgExtensions", "NgExtensions\NgExtensions.csproj", "{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeleniumExtensions", "SeleniumExtensions\SeleniumExtensions.csproj", "{821F4D80-1094-4C40-B99F-36EDF4628F0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KendoExtensions", "KendoExtensions\KendoExtensions.csproj", "{AC0D4FAC-86CE-47AF-B532-E1E3B75F1655}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +19,18 @@ Global
 		{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{821F4D80-1094-4C40-B99F-36EDF4628F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821F4D80-1094-4C40-B99F-36EDF4628F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821F4D80-1094-4C40-B99F-36EDF4628F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821F4D80-1094-4C40-B99F-36EDF4628F0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC0D4FAC-86CE-47AF-B532-E1E3B75F1655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC0D4FAC-86CE-47AF-B532-E1E3B75F1655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC0D4FAC-86CE-47AF-B532-E1E3B75F1655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC0D4FAC-86CE-47AF-B532-E1E3B75F1655}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ namespace RobustHaven.IntegrationTests.Framework
 	{
 		#region composite nodes
 
-		public void VisitEnter(Component component)
+		public virtual void VisitEnter(Component component)
 		{
 			var types = new[] {component.GetType()};
 			MethodInfo methodInfo = GetType().GetMethod("VisitEnter", types);
@@ -21,7 +21,7 @@ namespace RobustHaven.IntegrationTests.Framework
 			}
 		}
 
-		public void VisitExecute(Component component)
+		public virtual void VisitExecute(Component component)
 		{
 			var types = new[] {component.GetType()};
 			MethodInfo methodInfo = GetType().GetMethod("VisitExecute", types);
@@ -35,7 +35,7 @@ namespace RobustHaven.IntegrationTests.Framework
 			}
 		}
 
-		public void VisitLeave(Component component)
+		public virtual void VisitLeave(Component component)
 		{
 			var types = new[] {component.GetType()};
 			MethodInfo methodInfo = GetType().GetMethod("VisitLeave", types);
@@ -53,7 +53,7 @@ namespace RobustHaven.IntegrationTests.Framework
 
 		#region leaf node
 
-		public void Visit(Component component)
+		public virtual void Visit(Component component)
 		{
 			// Use reflection to find and invoke the correct Visit method
 			var types = new[] {component.GetType()};
