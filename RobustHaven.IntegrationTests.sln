@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobustHaven.IntegrationTests", "RobustHaven.IntegrationTests.csproj", "{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgExtensions", "NgExtensions\NgExtensions.csproj", "{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeleniumExtensions", "SeleniumExtensions\SeleniumExtensions.csproj", "{821F4D80-1094-4C40-B99F-36EDF4628F0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KendoExtensions", "KendoExtensions\KendoExtensions.csproj", "{AC0D4FAC-86CE-47AF-B532-E1E3B75F1655}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{EDC31852-7C0E-4175-835C-0CBD2E3ADFB8}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
