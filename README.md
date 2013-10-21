@@ -12,6 +12,23 @@ Behind the scenes is a fluent interface using composition and a hierarchical vis
 Extensions contained in these packages allow you to interact with components found in AngularJs (NgExtensions), Kendo (KendoExtensions), and Bootstrap.
 
 
+##Nuget Packages
+[Selenium Init](http://www.nuget.org/packages/RobustHaven.IntegrationTests.SeleniumExtensions/)  
+
+	Install-Package RobustHaven.IntegrationTests.SeleniumExtensions 
+
+
+[Kendo Extensions](http://www.nuget.org/packages/RobustHaven.IntegrationTests.KendoExtensions/)  
+
+	Install-Package RobustHaven.IntegrationTests.KendoExtensions 
+
+
+[AngularJs Extensions](http://www.nuget.org/packages/RobustHaven.IntegrationTests.NgExtensions/)  
+
+	Install-Package RobustHaven.IntegrationTests.NgExtensions 
+
+
+
 ### Sample 001: viewmodel referenced by multiple flows allows disconnected flows to interact as expected
 
 flows can be composites (nested flows) - logins, partial views
