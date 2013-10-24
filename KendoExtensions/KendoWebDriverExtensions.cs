@@ -16,7 +16,7 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			{
 				IWebElement pager = driver.FindElement(ctx, By.CssSelector(".k-pager-info"), 10);
 
-				if (counter > (limitTo/2) && pager.Text.Equals("No items to display"))
+				if (counter > (limitTo / 2) && pager.Text.Equals("No items to display"))
 				{
 					return 0;
 				}

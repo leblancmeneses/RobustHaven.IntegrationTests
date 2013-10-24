@@ -8,36 +8,53 @@ namespace RobustHaven.IntegrationTests.NgExtensions
 {
 	public static class NgWebDriverExtensions
 	{
-		public static T NgScope<T>(this IWebDriver driver, IWebElement element, string path, Func<T, bool> waitUntilTrue)
+		public static T NgScope<T>(this IWebDriver driver, IWebElement element, string path)
 		{
-			T model;
+			if (!string.IsNullOrEmpty(path))
+			{
+				path = string.Format(".{0}", path);
+			}
+
+			string script = string.Format("return JSON.stringify(angular.element(arguments[0]).scope(){0});", path);
+			object result = ((IJavaScriptExecutor)driver).ExecuteScript(script, element);
+			T model = JsonConvert.DeserializeObject<T>((string)result);
+
+			return model;
+		}
+
+		public static IWebElement FindElementByNgController(this IWebDriver driver, ISearchContext searchContext,
+													 string controllerName)
+		{
+			string css = string.Format("div[ng-controller='{0}']", controllerName);
+			return driver.FindElement(searchContext, By.CssSelector(css));
+		}
+
+		public static IWebElement FindElementByNgController(this IWebDriver driver, string controllerName)
+		{
+			return driver.FindElementByNgController(driver, controllerName);
+		}
+		
+		public static void NgWaitFor(this IWebDriver driver, IWebElement element, string conditionExpression, int seconds = 15)
+		{
 			int cnt = 0;
+			bool result;
 			do
 			{
+				if (cnt >= seconds)
+				{
+					throw new TimeoutException("Wait until true exceeded wait limit.");
+				}
+
 				if (cnt++ > 0)
 				{
 					Thread.Sleep(1000);
 				}
 
-				if (!string.IsNullOrEmpty(path))
-				{
-					path = string.Format(".{0}", path);
-				}
-
-				string script = string.Format("return JSON.stringify(angular.element(arguments[0]).scope(){0});", path);
-				object result = ((IJavaScriptExecutor) driver).ExecuteScript(script, element);
-				model = JsonConvert.DeserializeObject<T>((string) result);
-			} while (waitUntilTrue(model) == false);
-
-			Thread.Sleep(1000);
-			return model;
-		}
-
-		public static IWebElement FindByNgController(this IWebDriver driver, ISearchContext searchContext,
-		                                             string controllerName)
-		{
-			string css = string.Format("div[ng-controller='{0}']", controllerName);
-			return driver.FindElement(searchContext, By.CssSelector(css));
+				string script = string.Format(@"
+var scope = angular.element(arguments[0]).scope();
+return {0};", conditionExpression);
+				result = driver.ScriptQuery<bool>(script, element);
+			} while (result == false);
 		}
 	}
 }
