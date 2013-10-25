@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using OpenQA.Selenium;
+using RobustHaven.IntegrationTests.SeleniumExtensions;
 
 namespace RobustHaven.IntegrationTests.KendoExtensions
 {
@@ -23,18 +25,44 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		}
 
 
-		public void Run(string command)
+		protected void ScriptExecute(string command)
 		{
 			if (_element == null)
 			{
 				var dataRole = KendoName.Replace("kendo", string.Empty).ToLowerInvariant();
-				_element = (IWebElement)((IJavaScriptExecutor)Driver).ExecuteScript("return $('[data-role=\"{0}\"]').get(0);".Replace("{0}", dataRole));
+				_element = Driver.ScriptQuery<IWebElement>("return $('[data-role=\"{0}\"]').get(0);".Replace("{0}", dataRole));
 			}
 
 			var cmd = command.Replace("$k", "$(arguments[0]).data('" + KendoName + "')");
-			((IJavaScriptExecutor)Driver).ExecuteScript(cmd, _element);
+			Driver.ScriptExecute(cmd, _element);
 			Thread.Sleep(1000);
 		}
 
+		protected T ScriptQuery<T>(string command, Func<T, int, bool> doWhile = null)
+		{
+			if (_element == null)
+			{
+				var dataRole = KendoName.Replace("kendo", string.Empty).ToLowerInvariant();
+				_element = Driver.ScriptQuery<IWebElement>("return $('[data-role=\"{0}\"]').get(0);".Replace("{0}", dataRole));
+			}
+
+			var cmd = command.Replace("$k", "$(arguments[0]).data('" + KendoName + "')");
+
+			T result;
+			var cnt = 0;
+			do
+			{
+				if (cnt != 0)
+				{
+					Thread.Sleep(1000);
+				}
+
+				var browserResult = ((IJavaScriptExecutor)Driver).ExecuteScript(cmd, _element);
+				result = (T)Convert.ChangeType(browserResult, typeof(T));
+				cnt++;
+			} while (doWhile != null && doWhile(result, cnt));
+
+			return result;
+		}
 	}
 }

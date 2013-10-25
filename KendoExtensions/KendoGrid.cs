@@ -16,14 +16,14 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 
 		public KendoGrid Select(int index)
 		{
-			Run("$k.select('tr:eq(" + index + ")');");
+			ScriptExecute("$k.select('tr:eq(" + index + ")');");
 			return this;
 		}
 
 
 		public KendoGrid InvokeCreate()
 		{
-			Run("$k.addRow();");
+			ScriptExecute("$k.addRow();");
 			return this;
 		}
 
@@ -34,7 +34,15 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 
 		public int Total()
 		{
-			return Driver.kGridTotal();
+			var total = ScriptQuery<int>("return $k.dataSource.total();", (retrived, cycles) => retrived == 0 && cycles < 10);
+
+			return total;
+		}
+
+
+		public int TotalPages()
+		{
+			return ScriptQuery<int>("return $k.dataSource.totalPages();", (retrived, cycles) => retrived == 0 && cycles < 10);
 		}
 		
 

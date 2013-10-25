@@ -20,7 +20,7 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		/// <returns>KendoDropDownList</returns>
 		public KendoDropDownList Select(int index)
 		{
-			Run(string.Format("$k.select({0});$k.trigger('change');", index));
+			ScriptExecute(string.Format("$k.select({0});$k.trigger('change');", index));
 			return this;
 		}
 
@@ -33,7 +33,7 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		/// <returns>KendoDropDownList</returns>
 		public KendoDropDownList Select(string dataTextFieldName, string valueOfDataTextField)
 		{
-			Run(string.Format("$k.select(function(dataItem) {{ return dataItem.{0}.trim() === '{1}';}});$k.trigger('change');", dataTextFieldName, valueOfDataTextField));
+			ScriptExecute(string.Format("$k.select(function(dataItem) {{ return dataItem.{0}.trim() === '{1}';}});$k.trigger('change');", dataTextFieldName, valueOfDataTextField));
 
 			return this;
 		}

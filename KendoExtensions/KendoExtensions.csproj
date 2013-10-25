@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="KendoDropDownList.cs" />
     <Compile Include="KendoGrid.cs" />
-    <Compile Include="KendoWebDriverExtensions.cs" />
     <Compile Include="KendoWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
