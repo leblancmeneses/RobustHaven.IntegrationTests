@@ -5,7 +5,7 @@ using System.Text;
 namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 {
 	//http://stackoverflow.com/questions/2547428/net-console-textwriter-that-understands-indent-unindent-indentlevel
-	public class ConsoleLogger : TextWriter
+	public class ConsoleLogger : TextWriter, ILog
 	{
 		private readonly TextWriter _mOldConsole;
 		private bool _mDoIndent;
@@ -45,6 +45,12 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			WriteLine("Then " + input, values);
 		}
 
+		public void But(string input, params object[] values)
+		{
+			Indent++;
+			WriteLine("But " + input, values);
+			Indent--;
+		}
 
 		public override void Write(char ch)
 		{

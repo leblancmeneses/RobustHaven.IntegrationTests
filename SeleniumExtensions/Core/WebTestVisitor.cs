@@ -13,14 +13,61 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			_testContext = testContext;
 		}
 
-		public override void Visit(Component template)
+		public override void VisitEnter(Component component)
 		{
-			if (IsSubclassOfRawGeneric(typeof (WebTestLeaf<>), template.GetType()))
+			if (IsSubclassOfRawGeneric(typeof(WebTestComposite<>), component.GetType()))
+			{
+				Stack.Push(() =>
+				{
+					MethodInfo methodInfo = component.GetType().GetMethod("ExecuteOnEnter");
+					methodInfo.Invoke(component, new object[] { _testContext });
+				});
+			}
+			else
+			{
+				if (component is Sequence)
+				{
+					base.VisitEnter(component);
+				}
+			}
+		}
+
+		public override void VisitExecute(Component component)
+		{
+			if (component is Sequence)
+			{
+				base.VisitExecute(component);
+			}
+		}
+		
+		public override void VisitLeave(Component component)
+		{
+			if (IsSubclassOfRawGeneric(typeof(WebTestComposite<>), component.GetType()))
+			{
+				Stack.Push(() =>
+				{
+					MethodInfo methodInfo = component.GetType().GetMethod("ExecuteOnLeave");
+					methodInfo.Invoke(component, new object[] { _testContext });
+				});
+			}
+			else
+			{
+				if (component is Sequence)
+				{
+					base.VisitLeave(component);
+				}
+			}
+		}
+
+
+		public override void Visit(Component component)
+		{
+			if (IsSubclassOfRawGeneric(typeof (WebTestLeaf<>), component.GetType()))
 			{
 				Stack.Push(() =>
 					{
-						MethodInfo methodInfo = template.GetType().GetMethod("Execute");
-						methodInfo.Invoke(template, new object[] {_testContext});
+						MethodInfo methodInfo = component.GetType().GetMethod("Execute");
+						methodInfo.Invoke(component, new object[] {_testContext});
 					});
 			}
 			else

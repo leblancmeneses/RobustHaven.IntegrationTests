@@ -13,7 +13,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 
 		public IWebDriver Driver { get; private set; }
 
-		public ConsoleLogger Logger { get; set; }
+		public ILog Logger { get; set; }
 
 		public Configuration Configuration { get; private set; }
 	}

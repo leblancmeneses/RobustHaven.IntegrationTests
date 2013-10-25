@@ -1,6 +1,6 @@
 ﻿using RobustHaven.IntegrationTests.Framework;
 
-namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
+namespace RobustHaven.IntegrationTests.SeleniumExtensions.Extensions
 {
 	public static class ComponentExtensions
 	{
