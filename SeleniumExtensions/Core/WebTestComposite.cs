@@ -5,8 +5,6 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 {
 	public abstract class WebTestComposite<T> : Component
 	{
-		readonly List<Component> _children = new List<Component>();
-		
 		public abstract void ExecuteOnEnter(WebTestContext ctx);
 
 		public abstract void ExecuteOnLeave(WebTestContext ctx);
@@ -17,12 +15,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			set; 
 		}
 
-		public void AddChild(ALeaf leaf)
-		{
-			_children.Add(leaf);
-		}
-
-		public List<Component> Children { get { return _children; } }
+		public abstract IEnumerable<Component> Children { get; }
 
 
 		public override void Accept(AVisitor visitor)

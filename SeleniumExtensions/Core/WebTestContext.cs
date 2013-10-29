@@ -4,17 +4,15 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 {
 	public class WebTestContext
 	{
-		public WebTestContext(Configuration configuration)
+		public WebTestContext(string baseUrl)
 		{
-			Configuration = configuration;
-			Driver = configuration.WebDriver;
-			Logger = new ConsoleLogger();
+			BaseUrl = baseUrl;
 		}
 
-		public IWebDriver Driver { get; private set; }
+		public IWebDriver Driver { get; set; }
 
 		public ILog Logger { get; set; }
 
-		public Configuration Configuration { get; private set; }
+		public string BaseUrl { get; private set; }
 	}
 }

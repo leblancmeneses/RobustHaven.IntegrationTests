@@ -5,24 +5,6 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Extensions
 {
 	public static class ILogExtensions
 	{
-		public static void Given(this ILog logger, Func<object[]> execute, string message)
-		{
-			logger.Given(message, execute());
-		}
-		public static void When(this ILog logger, Func<object[]> execute, string message)
-		{
-			logger.When(message, execute());
-		}
-		public static void Then(this ILog logger, Func<object[]> execute, string message)
-		{
-			logger.Then(message, execute());
-		}
-		public static void And(this ILog logger, Func<object[]> execute, string message)
-		{
-			logger.And(message, execute());
-		}
-
-
 		public static void Given(this ILog logger, Action execute, string message, params object[] args)
 		{
 			execute();
@@ -42,6 +24,21 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Extensions
 		{
 			execute();
 			logger.And(message, args);
+		}
+
+
+
+		public static void Info(this ILog logger, Action execute, string message, params object[] args)
+		{
+			execute();
+			logger.Info(message, args);
+		}
+
+
+		public static void Verified(this ILog logger, Action execute, string message, params object[] args)
+		{
+			execute();
+			logger.Verified(message, args);
 		}
 	}
 }

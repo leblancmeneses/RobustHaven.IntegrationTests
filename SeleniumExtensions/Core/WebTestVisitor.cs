@@ -19,6 +19,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			{
 				Stack.Push(() =>
 				{
+					_testContext.Logger.IndentBy++;
 					MethodInfo methodInfo = component.GetType().GetMethod("ExecuteOnEnter");
 					methodInfo.Invoke(component, new object[] { _testContext });
 				});
@@ -48,6 +49,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 				{
 					MethodInfo methodInfo = component.GetType().GetMethod("ExecuteOnLeave");
 					methodInfo.Invoke(component, new object[] { _testContext });
+					_testContext.Logger.IndentBy--;
 				});
 			}
 			else
@@ -65,10 +67,12 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			if (IsSubclassOfRawGeneric(typeof (WebTestLeaf<>), component.GetType()))
 			{
 				Stack.Push(() =>
-					{
-						MethodInfo methodInfo = component.GetType().GetMethod("Execute");
-						methodInfo.Invoke(component, new object[] {_testContext});
-					});
+				{
+					_testContext.Logger.IndentBy++;
+					MethodInfo methodInfo = component.GetType().GetMethod("Execute");
+					methodInfo.Invoke(component, new object[] { _testContext });
+					_testContext.Logger.IndentBy--;
+				});
 			}
 			else
 			{

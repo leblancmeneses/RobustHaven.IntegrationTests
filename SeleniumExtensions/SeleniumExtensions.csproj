@@ -52,8 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ComponentExtensions.cs" />
-    <Compile Include="Core\Configuration.cs" />
-    <Compile Include="Core\ConsoleLogger.cs" />
     <Compile Include="Core\ILog.cs" />
     <Compile Include="Extensions\ILogExtensions.cs" />
     <Compile Include="Core\WebTestComposite.cs" />

@@ -8,7 +8,6 @@ using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
 
 namespace RobustHaven.IntegrationTests.SeleniumExtensions
 {
-
 	public enum ViewModes
 	{
 		EditorTemplate,
