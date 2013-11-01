@@ -17,8 +17,6 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 		public string BaseUrl { get; private set; }
 
 
-
-		public abstract void Background(string info, params object[] values);
 		public abstract void Scenario(string name, params object[] values);
 		public abstract void Given(string input, params object[] values);
 		public abstract void When(string input, params object[] values);

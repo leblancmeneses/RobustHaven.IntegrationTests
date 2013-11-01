@@ -5,6 +5,8 @@
 		int IndentBy { get; set; }
 
 		void Gherkin(string prefix, string input, params object[] values);
+		void GherkinAppend(string input, params object[] values);
+
 		void Verified(string input, params object[] values);
 		void Info(string input, params object[] values);
 
