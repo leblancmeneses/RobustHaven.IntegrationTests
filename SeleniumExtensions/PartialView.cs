@@ -24,12 +24,15 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 
 		public ViewModes ViewMode { get; set; }
 
+		public bool ClearInputFirst { get; set; }
+
 		public PartialView(WebTestContext webTestContext, IWebDriver webDriver, IWebElement partialElement)
 		{
 			WebTestContext = webTestContext;
 			WebDriver = webDriver;
 			PartialElement = partialElement;
 			ViewMode = ViewModes.EditorTemplate;
+			ClearInputFirst = false;
 		}
 
 

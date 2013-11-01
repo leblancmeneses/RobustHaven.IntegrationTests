@@ -6,11 +6,11 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 {
 	public class WebTestVisitor : BaseVisitor
 	{
-		private readonly WebTestContext _testContext;
+		public WebTestContext Context { get; private set; }
 
 		public WebTestVisitor(WebTestContext testContext)
 		{
-			_testContext = testContext;
+			Context = testContext;
 		}
 
 		public override void VisitEnter(Component component)
@@ -19,9 +19,10 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			{
 				Stack.Push(() =>
 				{
-					_testContext.Logger.IndentBy++;
+					Context.Logger.NewLine();
+					Context.Logger.IndentBy++;
 					MethodInfo methodInfo = component.GetType().GetMethod("ExecuteOnEnter");
-					methodInfo.Invoke(component, new object[] { _testContext });
+					methodInfo.Invoke(component, new object[] { Context });
 				});
 			}
 			else
@@ -47,9 +48,10 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			{
 				Stack.Push(() =>
 				{
+					Context.Logger.NewLine();
 					MethodInfo methodInfo = component.GetType().GetMethod("ExecuteOnLeave");
-					methodInfo.Invoke(component, new object[] { _testContext });
-					_testContext.Logger.IndentBy--;
+					methodInfo.Invoke(component, new object[] { Context });
+					Context.Logger.IndentBy--;
 				});
 			}
 			else
@@ -68,10 +70,11 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
 			{
 				Stack.Push(() =>
 				{
-					_testContext.Logger.IndentBy++;
+					Context.Logger.NewLine();
+					Context.Logger.IndentBy++;
 					MethodInfo methodInfo = component.GetType().GetMethod("Execute");
-					methodInfo.Invoke(component, new object[] { _testContext });
-					_testContext.Logger.IndentBy--;
+					methodInfo.Invoke(component, new object[] { Context });
+					Context.Logger.IndentBy--;
 				});
 			}
 			else
