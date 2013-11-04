@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecActionView.cs" />
     <Compile Include="Extensions\ComponentExtensions.cs" />
     <Compile Include="Core\ILog.cs" />
     <Compile Include="Core\WebTestComposite.cs" />

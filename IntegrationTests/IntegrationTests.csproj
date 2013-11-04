@@ -36,6 +36,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Attributes\FeatureAttribute.cs" />
+    <Compile Include="Attributes\ScenarioAttribute.cs" />
     <Compile Include="Framework\ALeaf.cs" />
     <Compile Include="Framework\AVisitor.cs" />
     <Compile Include="Framework\Component.cs" />
