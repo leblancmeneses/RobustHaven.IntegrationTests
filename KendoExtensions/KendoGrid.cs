@@ -1,5 +1,4 @@
-﻿using System.Data;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace RobustHaven.IntegrationTests.KendoExtensions
 {
@@ -8,6 +7,7 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		public KendoGrid(IWebDriver driver) :base(driver)
 		{
 		}
+
 
 		public KendoGrid(IWebDriver driver, IWebElement parentElement):base(driver, parentElement)
 		{
@@ -27,10 +27,12 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			return this;
 		}
 
+
 		protected override string KendoName
 		{
 			get { return "kendoGrid"; }
 		}
+
 
 		public int Total()
 		{
@@ -44,24 +46,63 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		{
 			return ScriptQuery<int>("return $k.dataSource.totalPages();", (retrived, cycles) => retrived == 0 && cycles < 10);
 		}
-		
+
+
+		public IWebElement GetTableRowByViewModelId(int id)
+		{
+			if (DataItemExistsOnCurrentPage(id))
+			{
+				return GetTableRow(id);
+			}
+
+			// Item not found on current page, start searching from page 1
+			for (int page = 1; page <= TotalPages(); page++)
+			{
+				// Go to page 
+				ScriptExecute("$k.dataSource.page(" + page + ")");
+
+				// Attempt to find item on this page
+				if (DataItemExistsOnCurrentPage(id))
+				{
+					return GetTableRow(id);
+				}
+			}
+
+			return null;
+		}
+
 
 		public void ShouldHaveIncreasedFromInit(int initialGridTotal)
 		{
-			var total = Total();
-			if (total <= initialGridTotal)
-			{
-				throw new ConstraintException(string.Format("'grid paging total' should have increased from {0} but was {1}.", initialGridTotal, total));
-			}
+			Assert.IsTrue(Total() > initialGridTotal, string.Format("'grid paging total' should have increased."));
 		}
+
 
 		public void ShouldHaveDecreasedFromInit(int initialGridTotal)
 		{
-			var total = Total();
-			if (total >= initialGridTotal)
-			{
-				throw new ConstraintException(string.Format("'grid paging total' should have decreased from {0} but was {1}.", initialGridTotal, total));
-			}
+			Assert.IsTrue(Total() < initialGridTotal, string.Format("'grid paging total' should have decreased."));
 		}
+
+
+		public void ShouldHaveRecords()
+		{
+			Assert.IsTrue(Total() > 0, "grid should have records");
+		}
+
+
+		private bool DataItemExistsOnCurrentPage(int id)
+		{
+			var dataItemExists = ScriptQuery<bool>("return $k.dataSource.get(" + id + ") != null;");
+			return dataItemExists;
+		}
+
+
+		private IWebElement GetTableRow(int id)
+		{
+			var dataItemUid = ScriptQuery<string>("return $k.dataSource.get(" + id + ").uid;");
+			var row = ScriptQuery<IWebElement>("return $k.tbody.find(\"tr[data-uid='" + dataItemUid + "']\").get(0);");
+			return row;
+		}
+
 	}
 }

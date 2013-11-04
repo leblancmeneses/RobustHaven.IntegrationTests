@@ -37,7 +37,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 			return (T)((IJavaScriptExecutor)driver).ExecuteScript(script, args);
 		}
 
-		public static void WaitFor(this IWebDriver driver, string conditionExpression, int seconds = 15)
+		public static void WaitFor(this IWebDriver driver, string conditionExpression, int seconds = 15, params object[] args)
 		{
 			int cnt = 0;
 			bool result;
@@ -54,7 +54,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 				}
 
 				string script = string.Format(@"return {0};", conditionExpression);
-				result = driver.ScriptQuery<bool>(script);
+				result = driver.ScriptQuery<bool>(script, args);
 			} while (result == false);
 		}
 	}
