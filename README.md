@@ -54,8 +54,9 @@ Usage Samples:
 	int initialGridTotal = grid.Total();
 	grid.Select(4);
 	
-	templateGrid.DoPerPage(i =>
-	{		
+	grid.DoPerPage(i =>
+	{	
+		// do work for each page in grid (unfavorite/favorite items)
 		ctx.Delay();
 	});
 			
