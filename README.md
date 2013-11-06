@@ -469,4 +469,4 @@ Usage Samples:
 
 	
 ### Step 4: red/green/refactor
-![form](https://raw.github.com/leblancmeneses/RobustHaven.IntegrationTests/master/Docs/nunit.jpg)
+![nunit](https://raw.github.com/leblancmeneses/RobustHaven.IntegrationTests/master/Docs/nunit.JPG)
