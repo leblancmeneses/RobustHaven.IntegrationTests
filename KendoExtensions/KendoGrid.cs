@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using System;
+using OpenQA.Selenium;
 
 namespace RobustHaven.IntegrationTests.KendoExtensions
 {
@@ -60,7 +61,7 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			{
 				// Go to page 
 				ScriptExecute("$k.dataSource.page(" + page + ")");
-
+				
 				// Attempt to find item on this page
 				if (DataItemExistsOnCurrentPage(id))
 				{
@@ -72,23 +73,19 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		}
 
 
-		public void ShouldHaveIncreasedFromInit(int initialGridTotal)
+		public void DoPerPage(Action<int> doWork)
 		{
-			Assert.IsTrue(Total() > initialGridTotal, string.Format("'grid paging total' should have increased."));
+			// Item not found on current page, start searching from page 1
+			for (int page = 1; page <= TotalPages(); page++)
+			{
+				// Go to page 
+				ScriptExecute("$k.dataSource.page(" + page + ")");
+
+				ScriptExecute("isBrowserBusy() == false");
+
+				doWork(page);
+			}
 		}
-
-
-		public void ShouldHaveDecreasedFromInit(int initialGridTotal)
-		{
-			Assert.IsTrue(Total() < initialGridTotal, string.Format("'grid paging total' should have decreased."));
-		}
-
-
-		public void ShouldHaveRecords()
-		{
-			Assert.IsTrue(Total() > 0, "grid should have records");
-		}
-
 
 		private bool DataItemExistsOnCurrentPage(int id)
 		{

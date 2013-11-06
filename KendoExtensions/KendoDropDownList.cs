@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System.Threading;
 
 namespace RobustHaven.IntegrationTests.KendoExtensions
 {
@@ -21,15 +20,13 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		/// <returns>KendoDropDownList</returns>
 		public KendoDropDownList Select(int index)
 		{
-			Thread.Sleep(1000);
-
 			ScriptExecute(string.Format("$k.select({0});$k.trigger('change');", index));
 			return this;
 		}
 
 		public T Value<T>() where T : struct
 		{
-			return ScriptQuery<T>("$k.value();");
+			return ScriptQuery<T>("return $k.value();");
 		}
 
 
@@ -41,8 +38,6 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		/// <returns>KendoDropDownList</returns>
 		public KendoDropDownList Select(string dataTextFieldName, string valueOfDataTextField)
 		{
-			Thread.Sleep(1000);
-
 			ScriptExecute(string.Format("$k.select(function(dataItem) {{ return dataItem.{0}.trim() === '{1}';}});$k.trigger('change');", dataTextFieldName, valueOfDataTextField));
 			return this;
 		}

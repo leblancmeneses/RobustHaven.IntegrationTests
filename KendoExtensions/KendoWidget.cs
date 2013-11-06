@@ -39,6 +39,9 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			}
 
 			var cmd = command.Replace("$k", "$(arguments[0]).data('" + KendoName + "')");
+
+			Driver.WaitFor("$(arguments[0]).data('" + KendoName + "') != null", 15, _dataRoleElement);
+
 			Driver.ScriptExecute(cmd, _dataRoleElement);
 			Thread.Sleep(1000);
 		}
@@ -56,6 +59,9 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			}
 
 			var cmd = command.Replace("$k", "$(arguments[0]).data('" + KendoName + "')");
+
+
+			Driver.WaitFor("$(arguments[0]).data('" + KendoName + "') != null", 15, _dataRoleElement);
 
 			T result;
 			var cnt = 0;

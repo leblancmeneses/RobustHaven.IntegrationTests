@@ -33,10 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RobustHaven.IntegrationTests">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.1.0.2\lib\RobustHaven.IntegrationTests.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.1.1.2\lib\RobustHaven.IntegrationTests.dll</HintPath>
     </Reference>
     <Reference Include="RobustHaven.IntegrationTests.SeleniumExtensions">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.1.2.0\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.1.6.1\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
