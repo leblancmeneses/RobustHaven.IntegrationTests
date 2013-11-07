@@ -67,6 +67,29 @@ Usage Samples:
 	
 
 	
+[T4WithNUnit Extensions](http://www.nuget.org/packages/RobustHaven.IntegrationTests.T4WithNUnit/)  
+
+	Install-Package RobustHaven.IntegrationTests.T4WithNUnit
+	
+
+Usage Sample:
+
+	#used to init tests
+	Scaffold T4WithNUnit
+	
+	#used to create scenario test - find generated code in _Test.cs
+	Scaffold T4WithNUnitTest -Force -IsLeaf:$true "Scenario:	Discoverable favorite feature for products `
+	Given there are zero favorited products for user `
+	 And user is at My XX page `
+	When user selects the dropdown for new XX `
+	Then they will get a prompt 'You have not favorited any products.' `
+	 And 'products' text is link to My Products page" 
+	 
+	
+	
+	
+
+	
 # How do you start?
 	
 ###  Step 1: Gherkin + balsamiq mockups
@@ -83,7 +106,7 @@ Usage Samples:
 	Scenario:	Discoverable favorite feature for products
 		Given there are zero favorited products for user
 		 And user is at My XX page
-		When user selects the dropdown for new xx
+		When user selects the dropdown for new XX
 		Then they will get a prompt 'You have not favorited any products.'
 		 And 'products' text is link to My Products page
 		 
@@ -95,7 +118,15 @@ Usage Samples:
 
 ### Step 2: nunit - no additional pluggins required for visual studio
 
+Install the T4WithNUnitTest package to help init your test project.
+Run following command when you plan to implement the next scenario.
+	
+	
+	Scaffold T4WithNUnitTest -Force -IsLeaf:$true "Scenario: Your Gherkin Scenario"
+	
 
+Here is how a multi-step test will look like:
+	
 	namespace IntegrationTests.Flows
 	{
 		[TestFixture]
@@ -163,24 +194,26 @@ Usage Samples:
 		{
 			ctx.Given(() =>
 			{
- 
+				// your code to do this work with ctx.Browser
 			}, "there are zero favorited products for user");
 
 
 			ctx.And(() =>
 			{
- 
+				// your code to do this work with ctx.Browser
 			}, "user is at My XX page");
 
 
 			ctx.When(() =>
 			{
- 
+				// your code to do this work with ctx.Browser
 			}, "user selects the dropdown for new xx");
 
  
 			ctx.Then(() =>
 				{ 
+					// your code to do this work with ctx.Browser
+				
 					ctx.Verified(() => li = favoriteProductList.Single(), "only one li element existed");
   
 				}, "they will get a prompt '{0}'", msg);
@@ -188,6 +221,7 @@ Usage Samples:
 
 			ctx.And(() =>
 			{ 
+				// your code to do this work with ctx.Browser
 			
 				ctx.Verified(() => Assert.AreEqual(href, productHomePage), verified);
 
