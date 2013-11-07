@@ -1,0 +1,54 @@
+<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+using System;
+using System.Text;
+using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
+
+namespace <#= Model.Namespace #>.Core
+{
+	public class Log : ILog
+	{
+		private StringBuilder _stringBuilder = new StringBuilder();
+		
+		public Log()
+		{
+			IndentBy = 0;
+		}
+
+		public string GherkinLog
+		{
+			get { return _stringBuilder.ToString(); }
+		}
+
+		public void Gherkin(string prefix, string input, params object[] values)
+		{
+			var line = "".PadLeft(IndentBy, '\t') + prefix + " " + string.Format(input, values);
+			Console.WriteLine(line);
+			_stringBuilder.AppendLine(line);
+		}
+
+		public void GherkinAppend(string input, params object[] values)
+		{
+			var write = string.Format(input, values);
+			Console.Write(write);
+			_stringBuilder.Append(write);
+		}
+
+		public void Verified(string input, params object[] values)
+		{
+			Console.WriteLine("".PadLeft(IndentBy, '\t') + "Verified: " + input, values);
+		}
+
+		public void Info(string input, params object[] values)
+		{
+			Console.WriteLine("".PadLeft(IndentBy, '\t') + "Info: " + input, values);
+		}
+
+		public void NewLine()
+		{
+			Console.WriteLine();
+		}
+
+		public int IndentBy { get; set; }
+	}
+}

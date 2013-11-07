@@ -1,0 +1,57 @@
+﻿<#+
+	private void Gherkin(string scenario)
+	{
+			var matches = Regex.Matches(scenario, @"^\s*(?<Key>Given|When|Then|But|And)\s(?<Msg>.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+			foreach(Match line in matches)
+			{
+				string key = line.Groups["Key"].Value;
+				var msg = line.Groups["Msg"].Value.Trim();
+				WriteLine("");
+				WriteLine("");
+				switch(key)
+				{
+					case "Given":
+#>
+			ctx.Given(() =>
+			{
+
+			}, "<#=msg.Replace("\"", "\\\"") #>");
+<#+
+						break;
+					case "When":
+#>
+			ctx.When(() =>
+			{
+						
+			}, "<#=msg.Replace("\"", "\\\"") #>");
+<#+
+						break;
+					case "Then":
+#>
+			ctx.Then(() =>
+			{
+						
+			}, "<#=msg.Replace("\"", "\\\"") #>");
+<#+
+						break;
+					case "But":
+#>
+					ctx.But(() =>
+					{
+							
+					}, "<#=msg.Replace("\"", "\\\"") #>");
+<#+
+						break;
+					case "And":
+#>
+					ctx.And(() =>
+					{
+							
+					}, "<#=msg.Replace("\"", "\\\"") #>");
+<#+
+						break;
+					default:break;
+				}
+			}
+	}
+#>

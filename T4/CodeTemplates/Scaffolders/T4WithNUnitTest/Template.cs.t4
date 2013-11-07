@@ -1,0 +1,94 @@
+<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ Output Extension="cs" #>
+<#@ Include file="helper.tt" #>
+<#
+var scenario = Model.Scenario.Trim();
+
+var title = string.Empty;
+var match = Regex.Match(scenario, @"^Scenario:\s*(?<Title>.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+if(match.Success)
+{
+	title = match.Groups["Title"].Value.Trim();
+}
+#>
+using <#= Model.Namespace #>.Core;
+using NUnit.Framework;
+using RobustHaven.IntegrationTests.Attributes;
+using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
+using RobustHaven.IntegrationTests.SeleniumExtensions.Extensions;
+<#
+if(!Model.IsLeaf)
+{
+#>
+using System.Collections.Generic;
+using RobustHaven.IntegrationTests.Framework;
+<#
+}
+#>
+
+
+namespace <#= Model.Namespace #>
+{
+	[TestFixture]
+	[Category("xx")]
+	[Feature("XXFeatureName")]
+	public class XXFeatureNameTests : FeatureTestBase
+	{
+		public override void Background()
+		{
+			Visitor.Context.Given("an authenticated user");
+		}
+
+
+		[Test]
+		[Scenario("<#=title #>")]
+		public void <#=Regex.Replace(title, "[^a-zA-Z0-9 ]", string.Empty).Replace(" ", "_") #>()
+		{
+			var xAction = new XAction {  };
+
+			xAction.Execute(Visitor);
+		}
+	}
+
+<#
+if(Model.IsLeaf)
+{
+#>
+	public class XAction : WebTestLeaf<object>
+	{
+		public override void Execute(WebTestContext ctx)
+		{
+<# Gherkin(scenario); #>
+		}
+	}
+<#
+}
+else
+{
+#>
+	public class XAction : WebTestComposite<object>
+	{
+		public override void ExecuteOnEnter(WebTestContext ctx)
+		{
+<# Gherkin(scenario); #>
+		}
+
+		public override void ExecuteOnLeave(WebTestContext ctx)
+		{
+
+		}
+		public override IEnumerable<Component> Children
+		{
+			get
+			{
+				//yield return childflow;
+			}
+		}
+	}
+<#
+}
+#>
+	
+}
+

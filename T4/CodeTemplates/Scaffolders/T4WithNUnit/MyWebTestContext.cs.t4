@@ -1,0 +1,54 @@
+<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ Output Extension="cs" #>
+using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
+
+namespace <#= Model.Namespace #>.Core
+{ 
+	public class MyWebTestContext : WebTestContext
+	{
+		public MyWebTestContext(string baseUrl) : base(baseUrl)
+		{
+		}
+
+
+		public override void Scenario(string input, params object[] values)
+		{
+			Logger.Gherkin("", input, values);
+		}
+
+		public override void Given(string input, params object[] values)
+		{
+			Logger.Gherkin("Given", input, values);
+		}
+
+		public override void When(string input, params object[] values)
+		{
+			Logger.Gherkin("When", input, values);
+		}
+
+		public override void Then(string input, params object[] values)
+		{
+			Logger.Gherkin("Then", input, values);
+		}
+
+		public override void And(string input, params object[] values)
+		{
+			Logger.Gherkin(" And", input, values);
+		}
+
+		public override void But(string input, params object[] values)
+		{
+			Logger.Gherkin(" But", input, values);
+		}
+
+		public override void Verified(string input, params object[] values)
+		{
+			Logger.Verified(input, values);
+		}
+
+		public override void Info(string input, params object[] values)
+		{
+			Logger.Info(input, values);
+		}
+	}
+}
