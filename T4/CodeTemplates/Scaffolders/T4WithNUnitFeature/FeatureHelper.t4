@@ -1,0 +1,158 @@
+﻿<#+
+	public Feature GetFromFile(string path)
+	{
+		var inputIterator = new StreamInputIterator(new FileStream(path, FileMode.Open));
+
+		var parser = new Parser();
+		var node = parser.Parse(inputIterator);
+				
+		var builder = new FeatureBuilder(inputIterator);
+		node.Accept(builder);
+
+		return builder.Result;
+	}
+	
+	public string CodeLabel(string name)
+	{
+		return Regex.Replace(name.Trim(), "[^a-zA-Z0-9 ]", string.Empty).Replace(" ", "_");
+	}
+	public string Text(string message)
+	{
+		return Regex.Replace(message.Trim(), "\"", @"\""");
+	}
+	
+	
+	
+	public class Feature
+	{
+		public Feature()
+		{
+			Tags = new List<string>();
+			Scenarios = new List<Scenario>();
+		}
+
+		public string Title { get; set; }
+		public List<string> Tags { get; set; }
+ 		public List<Scenario> Scenarios { get; set; }
+		public Scenario Background { get; set; } 
+	}
+
+	public class Scenario
+	{
+		public Scenario()
+		{
+			Issues = new List<int>();
+			Tags = new List<string>();
+			Gherkin = new List<Statement>();
+		}
+		public string Title { get; set; }
+		public List<int> Issues { get; set; }
+		public List<string> Tags { get; set; }
+		public string Notes { get; set; }
+		public List<Statement> Gherkin { get; set; } 
+	}
+
+	public class Statement
+	{
+		public string Key { get; set; }
+		public string Message { get; set; }
+	}
+
+
+
+	public class Parser
+	{
+		public AstNode Parse(IInputIterator inputIterator)
+		{
+
+			string grammar = @"
+NewLine: [\r][\n] / [\n][\r] / [\n] / [\r];
+Space: ' ';
+Tab: [\t];
+(?<EndOfLineComment>): (('#' / '//') (?<msg>(!NewLine .)*) NewLine) ;
+(?<MultilineComment>):  ('/*' (?<msg>(!'*/' .)*) '*/');
+s: ( Space / Tab / MultilineComment )+;
+S: ( NewLine / EndOfLineComment )+;
+W: (s / S);
+(?<Gherkin>): ((?<Line> s* (?<Key> 'Given'\i / 'When'\i / 'Then'\i / 'And'\i / 'But'\i )  (?<Statement> (!S .)+ ) ) W*)+;
+(?<TagLine>): (?<Tag>'@'  ((?<Name> (!(s* '@' / s* S) .)+ )) s*)+ W;
+(?<FeatureLine>): 'Feature'\i	 s* ':' s* (?<Title> (!S .)+ ) ;
+(?<Background>): 'Background'\i	 s* ':' W* Gherkin ;
+(?<Scenario>): TagLine* 'Scenario'\i s* ':'  (?<Title> (!S .)+ ) W* Gherkin?;
+(?<Document>):  W* TagLine* FeatureLine W* Background W* (Scenario W*)+ ;
+            "
+			.Trim();
+
+			AExpression rules = PEGrammar.Load(grammar);
+			
+			var visitor = new NpegParserVisitor(inputIterator);
+			rules.Accept(visitor);
+
+			if(visitor.IsMatch)
+			{
+				return visitor.AST;
+			}
+
+			throw new InvalidInputException();
+		}
+	}
+
+
+	public class FeatureBuilder : IAstNodeReplacement
+	{
+		private readonly IInputIterator _inputIterator;
+
+		private readonly Feature _feature = new Feature(); 
+
+		public FeatureBuilder(IInputIterator inputIterator)
+		{
+			_inputIterator = inputIterator;
+		}
+
+		public Feature Result
+		{
+			get { return _feature; }
+		}
+
+
+		public override void VisitEnter(AstNode node)
+		{
+			switch (node.Token.Name)
+			{
+				case "Document":
+					_feature.Tags.AddRange(LoadTags(node));
+					break;
+				case "FeatureLine":
+					_feature.Title = node.Children["Title"].Token.ValueAsString(_inputIterator);
+					break;
+				case "Background":
+					_feature.Background = new Scenario();
+					_feature.Background.Gherkin.AddRange(LoadGherkin(node.Children["Gherkin"]));
+					break;
+				case "Scenario":
+					var s = new Scenario() {Title = node.Children["Title"].Token.ValueAsString(_inputIterator)};
+					s.Tags.AddRange(LoadTags(node));
+					s.Gherkin.AddRange(LoadGherkin(node.Children["Gherkin"]));
+					_feature.Scenarios.Add(s);
+					break;
+			}
+		}
+
+		private IEnumerable<Statement> LoadGherkin(AstNode gherkinNode)
+		{
+			return gherkinNode.Children.Where(child => child.Token.Name.Equals("Line", StringComparison.InvariantCultureIgnoreCase)).Select(child => new Statement()
+				{
+					Key = child.Children["Key"].Token.ValueAsString(_inputIterator), Message = child.Children["Statement"].Token.ValueAsString(_inputIterator)
+				}).ToList();
+		}
+
+		private IEnumerable<string> LoadTags(AstNode tagLinesParentNode)
+		{
+			return tagLinesParentNode.Children.Where(x => x.Token.Name.Equals("TagLine", StringComparison.InvariantCultureIgnoreCase)).SelectMany(tagLine => tagLine.Children.Where(x => x.Token.Name.Equals("Tag", StringComparison.InvariantCultureIgnoreCase))).Select(tag => tag.Children["Name"].Token.ValueAsString(_inputIterator)).ToList();
+		}
+
+		public override void VisitLeave(AstNode node)
+		{
+		}
+	}
+#>

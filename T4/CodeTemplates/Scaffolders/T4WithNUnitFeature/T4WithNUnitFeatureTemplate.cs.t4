@@ -1,0 +1,108 @@
+<#@ Template debug="false" Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ assembly name="$(TargetDir)NPEG.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="NPEG" #>
+<#@ import namespace="NPEG.Extensions" #>
+<#@ import namespace="NPEG.ApplicationExceptions" #>
+<#@ import namespace="NPEG.GrammarInterpreter" #>
+<#@ Output Extension="cs" #>
+<#@ Include file="FeatureHelper.t4" #>
+
+<#
+var feature = GetFromFile(Model.InputFilePath);
+#>
+using IntegrationTests.Core;
+using NUnit.Framework;
+using RobustHaven.IntegrationTests.Attributes;
+using RobustHaven.IntegrationTests.SeleniumExtensions;
+using RobustHaven.IntegrationTests.SeleniumExtensions.Extensions;
+
+namespace <#= Model.Namespace #>
+{ 
+
+	[TestFixture]
+	<#foreach (var tag in feature.Tags){#>[Category("<#=tag#>")]<#}#>
+
+	[Feature("<#=Text(feature.Title)#>")]
+	public class <#=CodeLabel(feature.Title)#>Tests : FeatureTestBase
+	{
+		public override void Background()
+		{
+<#foreach (var statement in feature.Background.Gherkin)
+{
+	if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase))
+	{#>
+		Visitor.Context.Given("<#=Text(statement.Message)#>");
+	<#}
+	if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase))
+	{#>
+		Visitor.Context.When("<#=Text(statement.Message)#>");
+	<#}
+	if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
+	{#>
+		Visitor.Context.Then("<#=Text(statement.Message)#>");
+	<#}
+	if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase))
+	{#>
+		Visitor.Context.And("<#=Text(statement.Message)#>");
+	<#}
+	if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase))
+	{#>
+		Visitor.Context.But(@"<#=Text(statement.Message)#>");
+	<#}
+}#>
+		}
+
+
+<#foreach (var scenario in feature.Scenarios){#>
+
+		[Test]
+		[Scenario("<#=Text(scenario.Title) #>")]
+		public void <#=CodeLabel(scenario.Title)#>()
+		{
+			var action = new ExecActionView(ctx =>
+			{<#foreach (var statement in scenario.Gherkin){
+	if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase)){#>
+
+				ctx.Given(() =>
+				{
+
+				}, "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase)){#>
+
+
+				ctx.When(() =>
+				{
+						
+				}, "<#=Text(statement.Message) #>");<#}	if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase)){#>
+
+
+				ctx.Then(() =>
+				{
+						
+				}, "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase)){#>
+
+
+					ctx.And(() =>
+					{
+							
+					}, "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase)){#>
+
+
+					ctx.But(() =>
+					{
+							
+					}, "<#=Text(statement.Message) #>");<#}}#>
+
+			});
+
+			action.Execute(Visitor);
+		}
+<#}#>
+
+	}
+}

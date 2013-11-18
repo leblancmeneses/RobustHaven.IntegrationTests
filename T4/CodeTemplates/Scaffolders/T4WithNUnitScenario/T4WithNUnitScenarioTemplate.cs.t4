@@ -1,7 +1,7 @@
 <#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ Output Extension="cs" #>
-<#@ Include file="helper.tt" #>
+<#@ Include file="GherkinHelper.t4" #>
 <#
 var scenario = Model.Scenario.Trim();
 
@@ -29,26 +29,14 @@ using RobustHaven.IntegrationTests.Framework;
 
 
 namespace <#= Model.Namespace #>
-{
-	[TestFixture]
-	[Category("xx")]
-	[Feature("XXFeatureName")]
-	public class XXFeatureNameTests : FeatureTestBase
+{ 
+	[Test]
+	[Scenario("<#=title #>")]
+	public void <#=Regex.Replace(title, "[^a-zA-Z0-9 ]", string.Empty).Replace(" ", "_") #>()
 	{
-		public override void Background()
-		{
-			Visitor.Context.Given("an authenticated user");
-		}
+		var xAction = new XAction {  };
 
-
-		[Test]
-		[Scenario("<#=title #>")]
-		public void <#=Regex.Replace(title, "[^a-zA-Z0-9 ]", string.Empty).Replace(" ", "_") #>()
-		{
-			var xAction = new XAction {  };
-
-			xAction.Execute(Visitor);
-		}
+		xAction.Execute(Visitor);
 	}
 
 <#

@@ -77,8 +77,11 @@ Usage Sample:
 	#used to init tests
 	Scaffold T4WithNUnit
 	
-	#used to create scenario test - find generated code in _Test.cs
-	Scaffold T4WithNUnitTest -Force -IsLeaf:$true "Scenario:	Discoverable favorite feature for products `
+	#used to generate an nunit test given a feature file
+	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
+	
+	#used to generate an nunit test given a scenario string
+	Scaffold T4WithNUnitScenario -Force -IsLeaf:$true "Scenario:	Discoverable favorite feature for products `
 	Given there are zero favorited products for user `
 	 And user is at My XX page `
 	When user selects the dropdown for new XX `
