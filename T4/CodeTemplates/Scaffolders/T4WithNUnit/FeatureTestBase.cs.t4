@@ -20,8 +20,14 @@ namespace <#= Model.Namespace #>.Core
 		{
 			var feature = (FeatureAttribute)Attribute.GetCustomAttribute(GetType(), typeof(FeatureAttribute));
 			var categories = ((CategoryAttribute[])Attribute.GetCustomAttributes(GetType(), typeof(CategoryAttribute))).Select(x => x.Name).ToList();
+			var name = TestContext.CurrentContext.Test.Name;
+			var index = name.IndexOf('(');
+			if (index != -1)
+			{
+				name = name.Substring(0, index);
+			}
 			var scenario = GetType()
-				.GetMethod(TestContext.CurrentContext.Test.Name)
+				.GetMethod(name)
 				.GetCustomAttributes(true)
 				.OfType<ScenarioAttribute>()
 				.Single();
@@ -30,7 +36,7 @@ namespace <#= Model.Namespace #>.Core
 
 			Visitor = new WebTestVisitor(new MyWebTestContext("http://localhost:54646") { Browser = new FirefoxDriver(), Logger = Logger });
 
-			Logger.Info("***** Test: {0}:{1}", TestContext.CurrentContext.Test.Name, scenario.Name);
+			Logger.Info("***** Test: {0}:{1}", name, scenario.Name);
 
 
 			var i = 0;
