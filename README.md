@@ -1,16 +1,16 @@
 RobustHaven.IntegrationTests
 ============================
 
-RobustHaven.IntegrationTests is used for integration tests with WatiN or Selenium.
+RobustHaven.IntegrationTests will help you communicate and manage the full cycle of a feature across your whole organization using Gherkin syntax.
 
-One of the bigest problems with automated integration tests is a way to seperate data from actual workflow that needs to execute.
+RobustHaven.IntegrationTests is used for integration tests with WatiN or Selenium. 
+Extensions contained in these packages allow you to interact with components found in AngularJs (NgExtensions), Kendo (KendoExtensions), and Bootstrap.
 
-Strongly typed viewmodels are used on the server to generate views, used by angularjs on client $http, and hence can easily be reused in testing!
-This framework allows you to create a composite of your workflow and execute the workflow in the correct order while sharing strongly typed state.
+
+Most applications have viewmodels *used* on the server to generate views, *used* by angularjs on client $http, and hence can easily be *reused* in testing!
+This framework allows you to create a composite of your workflow and execute the workflow in the correct order while sharing strongly typed viewmodel state.
 The goal was to make the developer api minimal and push waits and context setup into lower levels.
 
-
-Extensions contained in these packages allow you to interact with components found in AngularJs (NgExtensions), Kendo (KendoExtensions), and Bootstrap.
 
 
 ##Nuget Packages
