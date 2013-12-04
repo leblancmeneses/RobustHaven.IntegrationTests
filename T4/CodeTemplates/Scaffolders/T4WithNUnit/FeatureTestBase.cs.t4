@@ -44,7 +44,7 @@ namespace <#= Model.Namespace #>.Core
 			{
 				if (i++ > 0)
 				{
-					Visitor.Context.Logger.GherkinAppend(", ");
+					Visitor.Context.Logger.GherkinAppend(" ");
 				}
 				Visitor.Context.Logger.GherkinAppend("@{0}", category);
 			}
