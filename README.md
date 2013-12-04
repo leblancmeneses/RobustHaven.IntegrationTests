@@ -97,6 +97,8 @@ Usage Sample:
 	
 ###  Step 1: Gherkin + balsamiq mockups
 
+Create a Gherkin describing the feature you plan to build.
+
 	@Development
 	Feature:	Product
 	Background:
@@ -122,10 +124,21 @@ Usage Sample:
 ### Step 2: nunit - no additional pluggins required for visual studio
 
 Install the T4WithNUnitTest package to help init your test project.
-Run following command when you plan to implement the next scenario.
+
+Scaffold your test scenarios individually or specify a feature file.
+
+
+	#used to generate an nunit test given a feature file
+	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
 	
-	
-	Scaffold T4WithNUnitTest -Force -IsLeaf:$true "Scenario: Your Gherkin Scenario"
+	#used to generate an nunit test given a scenario string
+	Scaffold T4WithNUnitScenario -Force -IsLeaf:$true "Scenario:	Discoverable favorite feature for products `
+	Given there are zero favorited products for user `
+	 And user is at My XX page `
+	When user selects the dropdown for new XX `
+	Then they will get a prompt 'You have not favorited any products.' `
+	 And 'products' text is link to My Products page" 
+	 	
 	
 
 Here is how a multi-step test will look like:
@@ -190,6 +203,8 @@ Here is how a multi-step test will look like:
 	
 	
 ### Step 3:  DiscoverableProductFeature.cs
+
+Replace the stubbed comments with actual code.
 
 	public class DiscoverableProductFeature : WebTestLeaf<object>
 	{
