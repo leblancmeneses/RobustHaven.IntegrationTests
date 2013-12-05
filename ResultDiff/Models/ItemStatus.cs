@@ -13,7 +13,9 @@ namespace ResultDiff.Models
 		[Description("Modified")]
 		XModified = 8,
 		[Description("Okay")]
-		XOkay = 64
+		XOkay = 64,
+		[Description("Parsing Failed")]
+		ParsingFailed = 128
 	}
 
 	public enum TestStatus

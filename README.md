@@ -254,6 +254,6 @@ Replace the stubbed comments with actual code.
 
 ### Step 5: CI setup ResultDiff
 
-	ResultDiff.exe -t="C:\ResultDiff\TestResult.xml" -bdd="C:\ResultDiff\FolderContaining\BddFiles"
+	ResultDiff.exe -t="C:\ResultDiff\TestResult.xml" -bdd="C:\FolderContaining\BddFiles" -j="C:\ResultDiff\out.json"
 
 ![ResultDiff](https://raw.github.com/leblancmeneses/RobustHaven.IntegrationTests/master/Docs/ResultDiff.png)

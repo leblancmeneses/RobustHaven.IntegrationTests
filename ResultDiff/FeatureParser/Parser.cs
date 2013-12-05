@@ -20,13 +20,21 @@ Tab: [\t];
 (?<MultilineComment>):  ('/*' (?<msg>(!'*/' .)*) '*/');
 s: ( Space / Tab / MultilineComment )+;
 S: ( NewLine / EndOfLineComment )+;
+S1: ( NewLine / EndOfLineComment );
 W: (s / S);
-(?<Gherkin>): ((?<Line> s* (?<Key> 'Given'\i / 'When'\i / 'Then'\i / 'And'\i / 'But'\i )  (?<Statement> (!S .)+ ) ) W*)+;
+(?<Table>):(?<Row>
+  s* ('|' (?<DataColumn>  (! ('|' / S)  .)+ ))+ '|' S1  
+)+;
+(?<Gherkin>): (((?<Line> s* (?<Key> 'Given'\i / 'When'\i / 'Then'\i / 'And'\i / 'But'\i )  (?<Statement> (!S .)+ ) ) W*) / Table)+;
 (?<TagLine>): (?<Tag>'@'  ((?<Name> (!(s* '@' / s* S) .)+ )) s*)+ W;
-(?<FeatureLine>): 'Feature'\i	 s* ':' s* (?<Title> (!S .)+ ) ;
+(?<FeatureLine>): 'Feature'\i	 s* ':' s* (?<Title> (!S .)+ ) W+ 
+  (?<InOrder> s* &'In order to'\i (?<Text> (!S .)+ ) S1)?
+  (?<AsAn> s* &'As an'\i (?<Text> (!S .)+ ) S1)?
+  (?<IWantTo> s* &'I want to'\i (?<Text> (!S .)+ ) S1)?;
 (?<Background>): 'Background'\i	 s* ':' W* Gherkin ;
 (?<Scenario>): TagLine* 'Scenario'\i s* ':'  (?<Title> (!S .)+ ) W* Gherkin?;
-(?<Document>):  W* TagLine* FeatureLine W* Background? W* (Scenario W*)+ ;
+(?<ScenarioOutline>): TagLine* 'Scenario'\i s 'Outline'\i s* ':'  (?<Title> (!S .)+ ) W* Gherkin? (?<Example> s* 'Examples:'\i S1 Table);
+(?<Document>):  W* TagLine* FeatureLine Background? W* ((Scenario/ScenarioOutline) W*)+ ;
 ".Trim();
 
 			lock (RuleInstanceLock)
@@ -36,6 +44,7 @@ W: (s / S);
 					RuleInstance = PEGrammar.Load(grammar);
 				}
 			}
+
 			var visitor = new NpegParserVisitor(inputIterator);
 			RuleInstance.Accept(visitor);
 

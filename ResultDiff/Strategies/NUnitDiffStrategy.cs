@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using NPEG.ApplicationExceptions;
 using ResultDiff.Extensions;
 using ResultDiff.Models;
 
@@ -17,25 +18,32 @@ namespace ResultDiff.Strategies
 			var files = Directory.GetFiles(ctx.BddFolder, "*.feature", SearchOption.TopDirectoryOnly);
 			foreach (var file in files)
 			{
-				var f = GetFeatureFromFile(file);
+				FeatureParser.Models.Feature f = null;
 
-				var feature = new FeatureViewModel()
-				{
-					Name = f.Title.CodeLabel(),
-					Status = ItemStatus.XNotFound
-				};
+				var feature = new FeatureViewModel();
 
-				foreach (var scenario in f.Scenarios)
+				try
 				{
-					var svm = new ScenarioViewModel
+					f = GetFeatureFromFile(file);
+					feature.Name = f.Title.CodeLabel();
+					feature.Status = ItemStatus.XNotFound;
+
+					foreach (var svm in f.Scenarios.Select(scenario => new ScenarioViewModel
+						{
+							Name = scenario.Title.CodeLabel(),
+							Status = ItemStatus.XNotFound,
+							Diff = { Left = scenario.ToString() }
+						}))
 					{
-						Name = scenario.Title.CodeLabel(),
-						Status = ItemStatus.XNotFound,
-						Diff = {Left = scenario.ToString()}
-					};
-					feature.Scenarios.Add(svm);
+						feature.Scenarios.Add(svm);
+					}
 				}
-
+				catch (InvalidInputException)
+				{
+					feature.Name = Path.GetFileNameWithoutExtension(file);
+					feature.Status = ItemStatus.ParsingFailed;
+				}
+				
 				diffResult.Features.Add(feature);
 			}
 

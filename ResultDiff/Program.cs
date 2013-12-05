@@ -20,6 +20,7 @@ namespace ResultDiff
 			bool show_help = false;
 			string testOutputFile = null;
 			string bddFolder = null;
+			string jsonOutputFile = Path.Combine(Environment.CurrentDirectory, "ResultDiff.json");
 
 			var p = new OptionSet() {
 				{ "t|testResult=", "the nunit TestResult.xml output.",
@@ -36,6 +37,18 @@ namespace ResultDiff
 							{
 								throw new FileNotFoundException(testOutputFile);
 							}
+						}
+				},
+				{ "j|json=", "location to write the json output file.",
+					v =>
+						{
+							jsonOutputFile = v;
+							if (string.IsNullOrEmpty(jsonOutputFile))
+							{
+								throw new FileNotFoundException("j argument is empty");
+							}
+
+							jsonOutputFile = Path.IsPathRooted(v) ? v : Path.Combine(Environment.CurrentDirectory, v);
 						}
 				},
 				{ "bdd=", "the bdd folder containing *.feature files.",
@@ -91,7 +104,7 @@ namespace ResultDiff
 				throw new InvalidOperationException("Missing required option -bdd=folderpath\bdd, see: ResultDiff -h");
 
 
-			Diff(bddFolder, testOutputFile);
+			Diff(bddFolder, testOutputFile, jsonOutputFile);
 		}
 
 
@@ -102,10 +115,7 @@ namespace ResultDiff
 			Console.Error.Write(e.ExceptionObject.ToString());
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.Error.WriteLine();
-			Console.Error.WriteLine("Press Enter to continue: ");
-			Console.Error.WriteLine();
 			Console.ForegroundColor = f;
-			Console.ReadLine();
 			Environment.Exit(1);
 		}
 
@@ -113,7 +123,7 @@ namespace ResultDiff
 		{
 			Console.WriteLine("Usage: ResultDiff [OPTIONS]+");
 			Console.WriteLine("ResultDiff provides a difference report on what the development team");
-			Console.WriteLine("has developed versus what the product owners expects.  It should be used ");
+			Console.WriteLine("has developed versus what the product owners expect.  It should be used ");
 			Console.WriteLine("as an iterative tool to spark refinement conversations on aligning ");
 			Console.WriteLine("expectations when implementing features and scenarios.");
 			Console.WriteLine();
@@ -131,7 +141,7 @@ namespace ResultDiff
 			}
 		}
 
-		static void Diff(string bddFolder, string testOutputFile)
+		static void Diff(string bddFolder, string testOutputFile, string jsonOutputFile)
 		{
 			var ctx = new DiffContext(bddFolder, testOutputFile);
 
@@ -142,11 +152,11 @@ namespace ResultDiff
 
 			foreach (var featureViewModel in result.Features.OrderBy(x => x.Status))
 			{
-				Console.WriteLine("{0,9}:  {1}", featureViewModel.Status.ToDescription(), featureViewModel.Name); 
+				Console.WriteLine("{0,14}:  {1}", featureViewModel.Status.ToDescription(), featureViewModel.Name); 
 
 				foreach (var scenarioViewModel in featureViewModel.Scenarios.OrderBy(x => x.Status))
 				{
-					Console.WriteLine("\t{0,9} - {1,6}:  {2}", scenarioViewModel.Status.ToDescription(), scenarioViewModel.TestStatus.ToDescription(), scenarioViewModel.Name); 
+					Console.WriteLine("\t\t{0,9} - {1,6}:  {2}", scenarioViewModel.Status.ToDescription(), scenarioViewModel.TestStatus.ToDescription(), scenarioViewModel.Name); 
 				}
 
 				Console.WriteLine("");
@@ -154,7 +164,12 @@ namespace ResultDiff
 			}
 
 			var output = JsonConvert.SerializeObject(result, Formatting.Indented);
-			File.WriteAllText("ResultDiff.json", output);
+			File.WriteAllText(jsonOutputFile, output);
+
+			if (result.Features.Any(x => x.Status == ItemStatus.ParsingFailed))
+			{
+				Environment.Exit(1);
+			}
 		}
 	}
 }
