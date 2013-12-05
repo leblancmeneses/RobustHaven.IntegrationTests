@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="DiffContext.cs" />
     <Compile Include="DiffResult.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FeatureParser\Models\Feature.cs" />
     <Compile Include="FeatureParser\FeatureBuilder.cs" />

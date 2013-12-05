@@ -22,7 +22,7 @@ namespace ResultDiff.Strategies
 				var feature = new FeatureViewModel()
 				{
 					Name = f.Title.CodeLabel(),
-					Status = ItemStatus.XExpected
+					Status = ItemStatus.XNotFound
 				};
 
 				foreach (var scenario in f.Scenarios)
@@ -30,7 +30,7 @@ namespace ResultDiff.Strategies
 					var svm = new ScenarioViewModel
 					{
 						Name = scenario.Title.CodeLabel(),
-						Status = ItemStatus.XExpected,
+						Status = ItemStatus.XNotFound,
 						Diff = {Left = scenario.ToString()}
 					};
 					feature.Scenarios.Add(svm);
@@ -51,10 +51,14 @@ namespace ResultDiff.Strategies
 						feature = new FeatureViewModel()
 						{
 							Name = featureCodeLabel,
-							Status = ItemStatus.XDefunct
+							Status = ItemStatus.XDeleted
 						};
 
 						diffResult.Features.Add(feature);
+					}
+					else
+					{
+						feature.Status = ItemStatus.XOkay;
 					}
 
 					foreach (var testCase in xml.Descendants("test-case"))
@@ -68,25 +72,41 @@ namespace ResultDiff.Strategies
 							scenario = new ScenarioViewModel()
 							{
 								Name = scenarioCodeLabel,
-								Status = ItemStatus.XDefunct
+								Status = ItemStatus.XDeleted
 							};
 
 							feature.Scenarios.Add(scenario);
-						} 
+						}
+						else
+						{
+							feature.Status = ItemStatus.XOkay;
+						}
 
 						scenario.DidPass = bool.Parse(testCase.Attribute("success").Value);
 
 						var message = testCase.Descendants("message").Single();
 						var final = Regex.Replace(message.Value, @"TearDown\s:\s", "");
 						final = Regex.Replace(final, @"^\s", "", RegexOptions.Multiline);
+
+						scenario.Diff.Right = GetFeatureFromString(final).Scenarios.Single().ToString();
+
+						if (scenario.Status == ItemStatus.XNotFound)
+						{
+							scenario.Status = ItemStatus.XOkay;
+						}
+
+						if (!scenario.Diff.IsEqual() && scenario.Status != ItemStatus.XDeleted)
+						{
+							scenario.Status = ItemStatus.XModified;
+						} 
+
 						if (scenario.DidPass)
 						{
-							scenario.Diff.Right = GetFeatureFromString(final).Scenarios.Single().ToString();
-							scenario.Status = scenario.Diff.IsEqual() ? ItemStatus.XPassed : ItemStatus.XModified;
+							scenario.TestStatus = TestStatus.XPassed;
 						}
 						else
 						{
-							scenario.Status = ItemStatus.XFailed;
+							scenario.TestStatus = TestStatus.XFailed;
 							scenario.ErrorText = final;
 						}
 					}

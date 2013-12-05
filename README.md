@@ -250,3 +250,10 @@ Replace the stubbed comments with actual code.
 	
 ### Step 4: red/green/refactor
 ![nunit](https://raw.github.com/leblancmeneses/RobustHaven.IntegrationTests/master/Docs/nunit.JPG)
+
+
+### Step 5: CI setup ResultDiff
+
+	ResultDiff.exe -t="C:\ResultDiff\TestResult.xml" -bdd="C:\ResultDiff\FolderContaining\BddFiles"
+
+![ResultDiff](https://raw.github.com/leblancmeneses/RobustHaven.IntegrationTests/master/Docs/ResultDiff.png)

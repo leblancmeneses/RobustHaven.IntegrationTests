@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NDesk.Options;
 using Newtonsoft.Json;
+using ResultDiff.Extensions;
+using ResultDiff.Models;
 using ResultDiff.Strategies;
 
 namespace ResultDiff
@@ -110,9 +113,9 @@ namespace ResultDiff
 		{
 			Console.WriteLine("Usage: ResultDiff [OPTIONS]+");
 			Console.WriteLine("ResultDiff provides a difference report on what the development team");
-			Console.WriteLine("has developed versus the business expectations.  It should be used ");
+			Console.WriteLine("has developed versus what the product owners expects.  It should be used ");
 			Console.WriteLine("as an iterative tool to spark refinement conversations on aligning ");
-			Console.WriteLine("goals with implementation of features and scenarios.");
+			Console.WriteLine("expectations when implementing features and scenarios.");
 			Console.WriteLine();
 			Console.WriteLine();
 			Console.WriteLine("Options:");
@@ -137,8 +140,20 @@ namespace ResultDiff
 
 			var result = strategy.Diff(ctx);
 
+			foreach (var featureViewModel in result.Features.OrderBy(x => x.Status))
+			{
+				Console.WriteLine("{0,9}:  {1}", featureViewModel.Status.ToDescription(), featureViewModel.Name); 
+
+				foreach (var scenarioViewModel in featureViewModel.Scenarios.OrderBy(x => x.Status))
+				{
+					Console.WriteLine("\t{0,9} - {1,6}:  {2}", scenarioViewModel.Status.ToDescription(), scenarioViewModel.TestStatus.ToDescription(), scenarioViewModel.Name); 
+				}
+
+				Console.WriteLine("");
+				Console.WriteLine("");
+			}
+
 			var output = JsonConvert.SerializeObject(result, Formatting.Indented);
-			Console.Write(output);
 			File.WriteAllText("ResultDiff.json", output);
 		}
 	}
