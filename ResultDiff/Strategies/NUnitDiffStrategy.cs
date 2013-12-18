@@ -96,7 +96,10 @@ namespace ResultDiff.Strategies
 						var final = Regex.Replace(message.Value, @"TearDown\s:\s", "");
 						final = Regex.Replace(final, @"^\s", "", RegexOptions.Multiline);
 
-						scenario.Diff.Right = GetFeatureFromString(final).Scenarios.Single().ToString();
+						if (scenario.DidPass)
+						{
+							scenario.Diff.Right = GetFeatureFromString(final).Scenarios.Single().ToString();
+						}
 
 						if (scenario.Status == ItemStatus.XNotFound)
 						{
