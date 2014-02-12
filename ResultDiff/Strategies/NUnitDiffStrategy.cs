@@ -90,7 +90,7 @@ namespace ResultDiff.Strategies
 							feature.Status = ItemStatus.XOkay;
 						}
 
-						scenario.DidPass = bool.Parse(testCase.Attribute("success").Value);
+						scenario.DidPass = testCase.Attribute("result").Value.Equals("success", StringComparison.InvariantCultureIgnoreCase);
 
 						var message = testCase.Descendants("message").Single();
 						var final = Regex.Replace(message.Value, @"TearDown\s:\s", "");
