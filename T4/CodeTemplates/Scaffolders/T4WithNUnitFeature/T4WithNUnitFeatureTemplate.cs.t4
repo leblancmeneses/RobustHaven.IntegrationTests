@@ -29,7 +29,7 @@ namespace <#= Model.Namespace #>
 	<#foreach (var tag in feature.Tags){#>[Category("<#=tag#>")]<#}#>
 
 	[Feature("<#=Text(feature.Title)#>")]
-	public class <#=CodeLabel(feature.Title)#>Tests : FeatureTestBase
+	public class <#=CodeLabel(feature.Title)#>FeatureTests : FeatureTestBase
 	{
 	<#
 if (feature.Background != null)
