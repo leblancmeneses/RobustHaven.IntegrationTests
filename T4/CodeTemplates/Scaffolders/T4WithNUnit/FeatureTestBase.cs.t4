@@ -33,8 +33,22 @@ namespace <#= Model.Namespace #>.Core
 				.Single();
 
 			Logger = new Log();
+			
+			var browser = new FirefoxDriver();
+			//var browsers = new IWebDriver[]
+			//{
+			//	new AndroidDriver(),
+			//	new ChromeDriver(),
+			//	new EventFiringWebDriver(),
+			//	new FirefoxDriver(),
+			//	new InternetExplorerDriver(),
+			//	new PhantomJSDriver(),
+			//	new RemoteWebDriver(new Uri(), new DesiredCapabilities()),
+			//	new SafariDriver(), 
+			//};
 
-			Visitor = new WebTestVisitor(new MyWebTestContext("http://localhost:54646") { Browser = new FirefoxDriver(), Logger = Logger });
+
+			Visitor = new WebTestVisitor(new MyWebTestContext("http://localhost:54646") { Browser = browser, Logger = Logger });
 
 			Logger.Info("***** Test: {0}:{1}", name, scenario.Name);
 
@@ -59,8 +73,10 @@ namespace <#= Model.Namespace #>.Core
 			Visitor.Context.Logger.Gherkin("", "");
 			Visitor.Context.Scenario("Scenario:\t{0}", scenario.Name);
 		}
-
-		public abstract void Background();
+		
+		public virtual void Background()
+		{
+		}
 
 
 		[TearDown]
