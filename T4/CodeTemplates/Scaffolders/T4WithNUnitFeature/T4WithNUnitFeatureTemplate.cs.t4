@@ -31,33 +31,42 @@ namespace <#= Model.Namespace #>
 	[Feature("<#=Text(feature.Title)#>")]
 	public class <#=CodeLabel(feature.Title)#>Tests : FeatureTestBase
 	{
+	<#
+if (feature.Background != null)
+{#>
 		public override void Background()
 		{
-<#foreach (var statement in feature.Background.Gherkin)
-{
-	if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase))
-	{#>
-		Visitor.Context.Given("<#=Text(statement.Message)#>");
-	<#}
-	if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase))
-	{#>
-		Visitor.Context.When("<#=Text(statement.Message)#>");
-	<#}
-	if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
-	{#>
-		Visitor.Context.Then("<#=Text(statement.Message)#>");
-	<#}
-	if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase))
-	{#>
-		Visitor.Context.And("<#=Text(statement.Message)#>");
-	<#}
-	if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase))
-	{#>
-		Visitor.Context.But(@"<#=Text(statement.Message)#>");
-	<#}
-}#>
-		}
+	
 
+<#
+	foreach (var statement in feature.Background.Gherkin)
+	{
+		if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase))
+		{#>
+			Visitor.Context.Given("<#=Text(statement.Message)#>");
+		<#}
+		if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase))
+		{#>
+			Visitor.Context.When("<#=Text(statement.Message)#>");
+		<#}
+		if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
+		{#>
+			Visitor.Context.Then("<#=Text(statement.Message)#>");
+		<#}
+		if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase))
+		{#>
+			Visitor.Context.And("<#=Text(statement.Message)#>");
+		<#}
+		if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase))
+		{#>
+			Visitor.Context.But(@"<#=Text(statement.Message)#>");
+		<#}
+	}
+#>
+		}
+	<#
+} // feature.Background != null
+#>
 
 <#foreach (var scenario in feature.Scenarios){#>
 

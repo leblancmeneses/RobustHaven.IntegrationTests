@@ -79,7 +79,7 @@ W: (s / S);
 (?<FeatureLine>): 'Feature'\i	 s* ':' s* (?<Title> (!S .)+ ) ;
 (?<Background>): 'Background'\i	 s* ':' W* Gherkin ;
 (?<Scenario>): TagLine* 'Scenario'\i s* ':'  (?<Title> (!S .)+ ) W* Gherkin?;
-(?<Document>):  W* TagLine* FeatureLine W* Background W* (Scenario W*)+ ;
+(?<Document>):  W* TagLine* FeatureLine W* Background? W* (Scenario W*)+ ;
             "
 			.Trim();
 
