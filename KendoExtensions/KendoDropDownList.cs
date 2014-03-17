@@ -29,6 +29,13 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			return ScriptQuery<T>("return $k.value();");
 		}
 
+		public bool IsEnabled 
+		{
+			get
+			{
+				return !ScriptQuery<bool>("return $('select', $k.wrapper).prop('disabled');");
+			}
+		}
 
 		/// <summary>
 		/// Selects item from the Kendo Down List by text and triggers change event.
