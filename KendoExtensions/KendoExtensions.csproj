@@ -36,7 +36,7 @@
       <HintPath>..\packages\RobustHaven.IntegrationTests.1.1.2\lib\RobustHaven.IntegrationTests.dll</HintPath>
     </Reference>
     <Reference Include="RobustHaven.IntegrationTests.SeleniumExtensions">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.1.6.1\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.1.6.2\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,10 +47,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WebDriver">
-      <HintPath>..\packages\Selenium.WebDriver.2.37.0\lib\net40\WebDriver.dll</HintPath>
+      <HintPath>..\packages\Selenium.WebDriver.2.40.0\lib\net40\WebDriver.dll</HintPath>
     </Reference>
     <Reference Include="WebDriver.Support">
-      <HintPath>..\packages\Selenium.Support.2.37.0\lib\net40\WebDriver.Support.dll</HintPath>
+      <HintPath>..\packages\Selenium.Support.2.40.0\lib\net40\WebDriver.Support.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

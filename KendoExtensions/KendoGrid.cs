@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium;
 
 namespace RobustHaven.IntegrationTests.KendoExtensions
@@ -21,6 +22,18 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			return this;
 		}
 
+
+		public ReadOnlyCollection<IWebElement> Select()
+		{
+			return ScriptQuery<ReadOnlyCollection<IWebElement>>(@"
+var selected = $k.select();
+var result = [];
+for(var i =0; i<selected.length; i++)
+{
+	result.push(selected[i]);
+}
+return result;");
+		}
 
 		public KendoGrid InvokeCreate()
 		{
