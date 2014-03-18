@@ -15,14 +15,24 @@ if(match.Success)
 using <#= Model.Namespace #>.Core;
 using NUnit.Framework;
 using RobustHaven.IntegrationTests.Attributes;
-using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
-using RobustHaven.IntegrationTests.SeleniumExtensions.Extensions;
 <#
-if(!Model.IsLeaf)
+if(Model.HowToGenerate == "leaf")
+{
+#>
+using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
+<#
+}
+else if(Model.HowToGenerate == "composite")
 {
 #>
 using System.Collections.Generic;
 using RobustHaven.IntegrationTests.Framework;
+using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
+<#
+}
+else{
+#>
+using RobustHaven.IntegrationTests.SeleniumExtensions;
 <#
 }
 #>
@@ -34,13 +44,28 @@ namespace <#= Model.Namespace #>
 	[Scenario("<#=title #>")]
 	public void <#=Regex.Replace(title, "[^a-zA-Z0-9 ]", string.Empty).Replace(" ", "_") #>()
 	{
+<#if(Model.HowToGenerate == "leaf" || Model.HowToGenerate == "composite"){#>
 		var xAction = new XAction {  };
 
 		xAction.Execute(Visitor);
+<#
+  }
+else
+{
+#>
+		var action = new ExecActionView(ctx =>
+		{
+<# Gherkin(scenario); #>
+		});
+
+		action.Execute(Visitor);
+<#
+}
+#>
 	}
 
 <#
-if(Model.IsLeaf)
+if(Model.HowToGenerate == "leaf")
 {
 #>
 	public class XAction : WebTestLeaf<object>
@@ -52,7 +77,7 @@ if(Model.IsLeaf)
 	}
 <#
 }
-else
+else if(Model.HowToGenerate == "composite")
 {
 #>
 	public class XAction : WebTestComposite<object>
