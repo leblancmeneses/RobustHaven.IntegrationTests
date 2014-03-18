@@ -63,6 +63,7 @@ Usage Samples:
 	var tableRow = productGrid.GetTableRowByViewModelId(Model.Id);
 	var actionsDropDown = new KendoDropDownList(ctx.Browser, tableRow);
 	actionsDropDown.Select("Delete");
+	var isdisabled = !actionsDropDown.IsEnabled;
 	
 	
 
@@ -81,7 +82,7 @@ Usage Sample:
 	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
 	
 	#used to generate an nunit test given a scenario string
-	Scaffold T4WithNUnitScenario -Force -IsLeaf:$true "Scenario:	Discoverable favorite feature for products `
+	Scaffold T4WithNUnitScenario -Force -HowToGenerate:"test|leaf|composite" "Scenario:	Discoverable favorite feature for products `
 	Given there are zero favorited products for user `
 	 And user is at My XX page `
 	When user selects the dropdown for new XX `
