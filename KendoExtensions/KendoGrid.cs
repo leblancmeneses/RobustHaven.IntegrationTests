@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
+using RobustHaven.IntegrationTests.SeleniumExtensions;
 
 namespace RobustHaven.IntegrationTests.KendoExtensions
 {
 	public class KendoGrid : KendoWidget
 	{
-		public KendoGrid(IWebDriver driver) :base(driver)
+		public KendoGrid(IWebDriver driver)
+			: base(driver)
 		{
 		}
 
 
-		public KendoGrid(IWebDriver driver, IWebElement parentElement):base(driver, parentElement)
+		public KendoGrid(IWebDriver driver, IWebElement parentElement)
+			: base(driver, parentElement)
 		{
 		}
 
@@ -34,6 +38,7 @@ for(var i =0; i<selected.length; i++)
 }
 return result;");
 		}
+
 
 		public KendoGrid InvokeCreate()
 		{
@@ -61,32 +66,88 @@ return result;");
 			return ScriptQuery<int>("return $k.dataSource.totalPages();", (retrived, cycles) => retrived == 0 && cycles < 10);
 		}
 
-
-		public IWebElement GetTableRowByViewModelId(int id)
+		// http://docs.telerik.com/kendo-ui/api/framework/datasource#methods-get
+		// can be number or string
+		public IWebElement GetTableRowByModelId(int id)
 		{
-			if (DataItemExistsOnCurrentPage(id))
+			var modelId = string.Format("{0}", id);
+			Func<bool> dataItemExistsOnCurrentPage = () =>
 			{
-				return GetTableRow(id);
+				var dataItemExists = ScriptQuery<bool>("return $k.dataSource.get(" + modelId + ") != null;");
+				return dataItemExists;
+			};
+
+			Func<IWebElement> getTableRow = () =>
+			{
+				var dataItemUid = ScriptQuery<string>("return $k.dataSource.get(" + modelId + ").uid;");
+				var row = ScriptQuery<IWebElement>("return $k.tbody.find(\"tr[data-uid='" + dataItemUid + "']\").get(0);");
+				return row;
+			};
+
+			if (dataItemExistsOnCurrentPage())
+			{
+				return getTableRow();
 			}
+
+			IWebElement foundItem = null;
 
 			// Item not found on current page, start searching from page 1
-			for (int page = 1; page <= TotalPages(); page++)
+			DoPerPage(x =>
 			{
-				// Go to page 
-				ScriptExecute("$k.dataSource.page(" + page + ")");
-				
 				// Attempt to find item on this page
-				if (DataItemExistsOnCurrentPage(id))
-				{
-					return GetTableRow(id);
-				}
+				if (!dataItemExistsOnCurrentPage()) return;
+
+				x.Cancel = true;
+				foundItem = getTableRow();
+			});
+
+			if (foundItem != null)
+				return foundItem;
+
+			return null;
+		}
+
+		public IWebElement GetTableRowByModelId(string id)
+		{
+			var modelId = string.Format("'{0}'", id);
+			Func<bool> dataItemExistsOnCurrentPage = () =>
+			{
+				var dataItemExists = ScriptQuery<bool>("return $k.dataSource.get(" + modelId + ") != null;");
+				return dataItemExists;
+			};
+
+			Func<IWebElement> getTableRow = () =>
+			{
+				var dataItemUid = ScriptQuery<string>("return $k.dataSource.get(" + modelId + ").uid;");
+				var row = ScriptQuery<IWebElement>("return $k.tbody.find(\"tr[data-uid='" + dataItemUid + "']\").get(0);");
+				return row;
+			};
+
+			if (dataItemExistsOnCurrentPage())
+			{
+				return getTableRow();
 			}
+
+			IWebElement foundItem = null;
+
+			// Item not found on current page, start searching from page 1
+			DoPerPage(x =>
+			{
+				// Attempt to find item on this page
+				if (!dataItemExistsOnCurrentPage()) return;
+
+				x.Cancel = true;
+				foundItem = getTableRow();
+			});
+
+			if (foundItem != null)
+				return foundItem;
 
 			return null;
 		}
 
 
-		public void DoPerPage(Action<int> doWork)
+		public void DoPerPage(Action<DoPerPageContext> doWork)
 		{
 			// Item not found on current page, start searching from page 1
 			for (int page = 1; page <= TotalPages(); page++)
@@ -96,23 +157,22 @@ return result;");
 
 				ScriptExecute("isBrowserBusy() == false");
 
-				doWork(page);
+				var ctx = new DoPerPageContext { PageNumber = page, TotalItems = Total() };
+
+				doWork(ctx);
+				if (ctx.Cancel)
+				{
+					break;
+				}
 			}
 		}
 
-		private bool DataItemExistsOnCurrentPage(int id)
+
+		public T DataItem<T>(IWebElement tr)
 		{
-			var dataItemExists = ScriptQuery<bool>("return $k.dataSource.get(" + id + ") != null;");
-			return dataItemExists;
+			var result = Driver.ScriptQuery<string>("return JSON.stringify(  $(arguments[0]).data('" + KendoName + "').dataItem($(arguments[1]))  );", KendoWidgetHtmlElement(), tr);
+			T model = JsonConvert.DeserializeObject<T>(result);
+			return model;
 		}
-
-
-		private IWebElement GetTableRow(int id)
-		{
-			var dataItemUid = ScriptQuery<string>("return $k.dataSource.get(" + id + ").uid;");
-			var row = ScriptQuery<IWebElement>("return $k.tbody.find(\"tr[data-uid='" + dataItemUid + "']\").get(0);");
-			return row;
-		}
-
 	}
 }

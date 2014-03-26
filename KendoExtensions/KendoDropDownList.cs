@@ -4,14 +4,15 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 {
 	public class KendoDropDownList : KendoWidget
 	{
-		public KendoDropDownList(IWebDriver driver) : base(driver)
+		public KendoDropDownList(IWebDriver driver)
+			: base(driver)
 		{
 		}
 
-		public KendoDropDownList(IWebDriver driver, IWebElement element) : base(driver, element)
+		public KendoDropDownList(IWebDriver driver, IWebElement element)
+			: base(driver, element)
 		{
 		}
-
 
 		/// <summary>
 		/// Selects item from the Kendo Down List by index and triggers changes event.
@@ -29,11 +30,19 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			return ScriptQuery<T>("return $k.value();");
 		}
 
-		public bool IsEnabled 
+		public bool IsEnabled
 		{
 			get
 			{
 				return !ScriptQuery<bool>("return $('select', $k.wrapper).prop('disabled');");
+			}
+		}
+
+		public IWebElement Ul
+		{
+			get
+			{
+				return ScriptQuery<IWebElement>("return $k.ul.get(0);");
 			}
 		}
 
@@ -49,7 +58,6 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 			return this;
 		}
 
-
 		/// <summary>
 		/// Selects item from the Kendo Down List by text and triggers change event.
 		/// </summary>
@@ -59,7 +67,6 @@ namespace RobustHaven.IntegrationTests.KendoExtensions
 		{
 			return Select("Text", valueOfDataTextField);
 		}
-
 
 		protected override string KendoName
 		{

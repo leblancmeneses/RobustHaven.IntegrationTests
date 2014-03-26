@@ -32,11 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RobustHaven.IntegrationTests">
       <HintPath>..\packages\RobustHaven.IntegrationTests.1.1.2\lib\RobustHaven.IntegrationTests.dll</HintPath>
     </Reference>
-    <Reference Include="RobustHaven.IntegrationTests.SeleniumExtensions">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.1.6.2\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
+    <Reference Include="RobustHaven.IntegrationTests.SeleniumExtensions, Version=1.6.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.1.6.5\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoPerPageContext.cs" />
     <Compile Include="KendoDropDownList.cs" />
     <Compile Include="KendoGrid.cs" />
     <Compile Include="KendoWidget.cs" />
