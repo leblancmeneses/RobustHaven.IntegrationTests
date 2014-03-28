@@ -98,16 +98,13 @@ Usage Sample:
 	
 ###  Step 1: Gherkin + balsamiq mockups
 
-Create a Gherkin describing the feature you plan to build.
+Create a Gherkin describing the feature you plan to build.  [Gherkin Language](http://docs.behat.org/guides/1.gherkin.html "Gherkin Language") 
 
 	@Development
 	Feature:	Product
 	Background:
 		Given an authenticated user
 		 And the user is at the Products home page
-
-	... more Scenario ...
-		 
 		 
 	Scenario:	Discoverable favorite feature for products
 		Given there are zero favorited products for user
@@ -126,128 +123,178 @@ Create a Gherkin describing the feature you plan to build.
 
 Install the T4WithNUnitTest package to help init your test project.
 
+	Install-Package RobustHaven.IntegrationTests.SeleniumExtensions 
+	Install-Package RobustHaven.IntegrationTests.T4WithNUnit
+
 Scaffold your test scenarios individually or specify a feature file.
 
 
-	#used to generate an nunit test given a feature file
+	#see T4WithNUnit Extensions usage samples above
 	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
 	
-	#used to generate an nunit test given a scenario string
-	Scaffold T4WithNUnitScenario -Force -IsLeaf:$true "Scenario:	Discoverable favorite feature for products `
-	Given there are zero favorited products for user `
-	 And user is at My XX page `
-	When user selects the dropdown for new XX `
-	Then they will get a prompt 'You have not favorited any products.' `
-	 And 'products' text is link to My Products page" 
-	 	
-	
 
-Here is how a multi-step test will look like:
-	
+
+Replace the stubbed comments with actual code.
+			
+	using System.Linq;
+	using IntegrationTests.Core;
+	using IntegrationTests.Extensions;
+	using IntegrationTests.Kendo;
+	using NUnit.Framework;
+	using OpenQA.Selenium;
+	using RobustHaven.IntegrationTests.Attributes;
+	using RobustHaven.IntegrationTests.NgExtensions;
+	using RobustHaven.IntegrationTests.SeleniumExtensions;
+	using RobustHaven.IntegrationTests.SeleniumExtensions.Extensions;
+
 	namespace IntegrationTests.Flows
 	{
 		[TestFixture]
-		[Category("product")]
-		[Feature("Product")]
-		public class ProductFeatureTests : FeatureTestBase
+		[Category("New Case")]
+		[Category("filing")]
+		[Feature("Filing - Required A")]
+		public class Filing_RequiredAFeatureTests : FeatureTestBase
 		{
+			private FolderViewModel folderViewModel;
+
+			#region test helpers
+
+			private IWebElement GetADiv()
+			{
+				var partialElement = Visitor.Context.Browser.FindElementByNgController("AController");
+				return partialElement;
+			}
+
+			private KendoGrid GetAGrid()
+			{
+				return new KendoGrid(Visitor.Context.Browser, GetADiv());
+			}
+
+			#endregion
+
+			public override void Setup()
+			{
+				folderViewModel = new FolderViewModel()
+				{
+					Category_Id = 2,
+					LowerCourt_Id = 3,
+					OtherCaseNumber = "3223",
+					Title = "dfdf",
+					Attorney_Id = 3,
+				};
+
+				base.Setup();
+			}
+
 			public override void Background()
 			{
-				Visitor.Context.Given("an authenticated user");
+				Visitor.Context.Given(() =>
+				{
+					var startingUrl = Visitor.Context.ToAbsoluteUrl(t => t.Action("AddOrEdit", "C", new{area="SomeModule"}));
+					Visitor.Context.Browser.Navigate().GoToUrl(startingUrl);
+				}, "an authenticated user is on the create a new case screen");
+
 				Visitor.Context.And(() =>
 				{
-					var startingUrl = Visitor.Context.ToAbsoluteUrl<ProductController>(t => t.Index());
-					Visitor.Context.Browser.Navigate().GoToUrl(startingUrl);
-				}, "the user is at the Products home page");
+					folderViewModel.Location_Id = 6; // washington
+				}, "user selects a location");
+
+				Visitor.Context.And(() =>
+				{
+					folderViewModel.CaseType_Id = 1; // adult motor vehicle offenses
+				}, "user selects a case type");
+
+				Visitor.Context.Verified(() =>
+				{
+					Assert.IsTrue(GetAGrid().Total() == 0);
+				}, "A listing has zero items");
+
+				Visitor.Context.When(() =>
+				{
+					var partialElement = Visitor.Context.Browser.FindElementByNgController("CaseController");
+					var caseView = new MyPartialView<FolderViewModel>(Visitor.Context, Visitor.Context.Browser, partialElement)
+					{
+						ViewModel = folderViewModel,
+						ViewMode = ViewModes.EditorTemplate
+					};
+					caseView.Write();
+					caseView.SaveChanges();
+				}, "user submits the new case");
 			}
-
-
-			... more tests ...
+		
 
 			[Test]
-			[Scenario("User edits an existing product's item information")]
-			public void User_edits_an_existing_products_item_information()
+			[Scenario("Required B are created")]
+			public void Required_B_are_created()
 			{
-				var productViewModel = new ProductViewModel { Name = Guid.NewGuid().ToString() };
-				var itemViewModel = new ItemViewModel() { Location_Id = 1, ItemNumber = "12345" };
-				var itemView = new ItemViewEditorProduct()
+				var action = new ExecActionView(ctx =>
 				{
-					IsValidInput = true,
-					IsPartiallyFilled = true,
-					ActivityMode = ItemActivityMode.ModifyProduct,
-					Model = itemViewModel
-				};
-				var create = new CreateProduct
-				{
-					Model = productViewModel,
-					ItemView = itemView
-				};
-				var change = new ExecActionView(context =>
-				{
-					productViewModel.Name = string.Format("changed {0}", productViewModel.Name);
-					itemViewModel.Title = "changed abc";
+					ctx.Then(() =>
+					{
+						var count = GetAGrid().Total();
+						ctx.Verified(() => { Assert.IsTrue(count == 2); }, " {0} required B created for the washington location", count);
+					}, "the A listing will show required B that are based on the location and case type");
 				});
-				var edit = new EditProduct
-				{
-					Model = productViewModel,
-					ItemView = itemView
-				};
-				var workflow = new Sequence(create, change)
-								.Sequence(edit);
-				workflow.Execute(Visitor);
+
+				action.Execute(Visitor);
 			}
 
-			... more tests ...
+
+			[Test]
+			[Scenario("Required B A type is read only when editing")]
+			public void Required_B_A_type_is_read_only_when_editing()
+			{
+				var action = new ExecActionView(ctx =>
+				{
+					ctx.And(() =>
+					{
+						var grid = GetAGrid();
+						grid.Select(1);
+					}, "user selects a required A");
+
+					ctx.Then(() =>
+					{
+						var element = GetADiv().FindElement(By.Id(ctx.ClientId<AViewModel>(x => x.AType_Id)));
+						var dropdown = new KendoDropDownList(ctx.Browser, element);
+
+						ctx.Verified(() => { Assert.IsFalse(dropdown.IsEnabled); }, "dropdown is disabled");
+
+					}, "the user will not be able to change the A type");
+				});
+
+				action.Execute(Visitor);
+			}
+
+
+
+			[Test]
+			[Scenario("Required A cannot be deleted")]
+			public void Required_A_cannot_be_deleted()
+			{
+				var action = new ExecActionView(ctx =>
+				{
+					ctx.Then(() =>
+					{
+						var grid = GetAGrid();
+						grid.Select(1);
+						var row = grid.Select().First();
+						var lastColumn = row.FindElement(By.CssSelector("td:last-of-type"));
+
+						ctx.Verified(() =>
+							{
+								Assert.Throws<NoSuchElementException>(() => lastColumn.FindElement(By.TagName("select")));
+							}, "drop down does not exist so user does not have the option to delete");
+						
+					}, "the user WILL NOT be able to delete the required B created");
+				});
+
+				action.Execute(Visitor);
+			}
+
 		}
 	}
 
 	
-	
-### Step 3:  DiscoverableProductFeature.cs
-
-Replace the stubbed comments with actual code.
-
-	public class DiscoverableProductFeature : WebTestLeaf<object>
-	{
-		public override void Execute(WebTestContext ctx)
-		{
-			ctx.Given(() =>
-			{
-				// your code to do this work with ctx.Browser
-			}, "there are zero favorited products for user");
-
-
-			ctx.And(() =>
-			{
-				// your code to do this work with ctx.Browser
-			}, "user is at My XX page");
-
-
-			ctx.When(() =>
-			{
-				// your code to do this work with ctx.Browser
-			}, "user selects the dropdown for new xx");
-
- 
-			ctx.Then(() =>
-				{ 
-					// your code to do this work with ctx.Browser
-				
-					ctx.Verified(() => li = favoriteProductList.Single(), "only one li element existed");
-  
-				}, "they will get a prompt '{0}'", msg);
-
-
-			ctx.And(() =>
-			{ 
-				// your code to do this work with ctx.Browser
-			
-				ctx.Verified(() => Assert.AreEqual(href, productHomePage), verified);
-
-			}, "'products' text is link to My Products page");
-		}
-	}
-
 	
 ### Step 4: red/green/refactor
 ![nunit](https://raw.github.com/leblancmeneses/RobustHaven.IntegrationTests/master/Docs/nunit.JPG)
