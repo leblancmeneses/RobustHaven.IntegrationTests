@@ -16,7 +16,7 @@
 <#
 var feature = GetFromFile(Model.InputFilePath);
 #>
-using IntegrationTests.Core;
+using <#= Model.Namespace #>.Core;
 using NUnit.Framework;
 using RobustHaven.IntegrationTests.Attributes;
 using RobustHaven.IntegrationTests.SeleniumExtensions;

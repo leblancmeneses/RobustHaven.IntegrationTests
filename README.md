@@ -3,7 +3,7 @@ RobustHaven.IntegrationTests
 
 RobustHaven.IntegrationTests will help you communicate and manage the full cycle of a feature across your whole organization using Gherkin syntax.
 
-RobustHaven.IntegrationTests is used for integration tests with WatiN or Selenium. 
+RobustHaven.IntegrationTests is used for integration tests with Selenium. 
 Extensions contained in these packages allow you to interact with components found in AngularJs (NgExtensions), Kendo (KendoExtensions), and Bootstrap.
 
 
