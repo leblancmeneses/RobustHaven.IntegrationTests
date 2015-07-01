@@ -8,41 +8,12 @@ namespace RobustHaven.IntegrationTests.NgExtensions
 {
 	public static class NgWebDriverExtensions
 	{
-		public static IWebElement FindElementByNgController(this IWebDriver driver, ISearchContext searchContext,
-													 string controllerName)
+		public static T NgFetch<T>(this IWebDriver driver, IWebElement element, string expression)
 		{
-			string css = string.Format("div[ng-controller='{0}']", controllerName);
-			return driver.FindElement(searchContext, By.CssSelector(css));
-		}
-
-		public static IWebElement FindElementByNgController(this IWebDriver driver, string controllerName)
-		{
-			return driver.FindElementByNgController(driver, controllerName);
-		}
-
-
-		public static T NgScope<T>(this IWebDriver driver, IWebElement element, string path)
-		{
-			if (!string.IsNullOrEmpty(path))
-			{
-				path = string.Format(".{0}", path);
-			}
-
-			string script = string.Format("return JSON.stringify(angular.element(arguments[0]).scope(){0});", path);
-			object result = ((IJavaScriptExecutor)driver).ExecuteScript(script, element);
-			T model = JsonConvert.DeserializeObject<T>((string)result);
-
-			return model;
-		}
-
-		public static T NgIsolateScope<T>(this IWebDriver driver, IWebElement element, string path)
-		{
-			if (!string.IsNullOrEmpty(path))
-			{
-				path = string.Format(".{0}", path);
-			}
-
-			string script = string.Format("return JSON.stringify(angular.element(arguments[0]).isolateScope(){0});", path);
+            string script = string.Format(@"
+var scope = angular.element(arguments[0]).scope();
+var isolateScope = angular.element(arguments[0]).isolateScope();
+return JSON.stringify({0});", expression);
 			object result = ((IJavaScriptExecutor)driver).ExecuteScript(script, element);
 			T model = JsonConvert.DeserializeObject<T>((string)result);
 

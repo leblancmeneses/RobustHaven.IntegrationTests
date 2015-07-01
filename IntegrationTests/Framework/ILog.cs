@@ -1,4 +1,4 @@
-﻿namespace RobustHaven.IntegrationTests.SeleniumExtensions.Core
+﻿namespace RobustHaven.IntegrationTests.Framework
 {
 	public interface ILog
 	{
@@ -11,5 +11,7 @@
 		void Info(string input, params object[] values);
 
 		void NewLine();
+
+		string GherkinLog { get; }
 	}
 }

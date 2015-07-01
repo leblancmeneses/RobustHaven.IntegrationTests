@@ -8,8 +8,16 @@ Extensions contained in these packages allow you to interact with components fou
 
 
 Most applications have viewmodels *used* on the server to generate views, *used* by angularjs on client $http, and hence can easily be *reused* in testing!
-This framework allows you to create a composite of your workflow and execute the workflow in the correct order while sharing strongly typed viewmodel state.
-The goal was to make the developer api minimal and push waits and context setup into lower levels.
+This framework uses a Queue of C# [Task][1], similar to [protractor](https://angular.github.io/protractor/), to create a workflow while sharing strongly typed viewModel state with C# closures.
+
+[1]: https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx
+
+Feature  | Protractor  | RobustHaven.IntegrationTests
+------------- | -------------
+Language  | JavaScript | C#
+Test Framework | Jasmine | NUnit (custom Gherkin logger)
+Promise API  | Web Driver Promise | Task
+Configuration | Conf.js | App.config
 
 
 
@@ -20,8 +28,8 @@ The goal was to make the developer api minimal and push waits and context setup 
 
 Usage Samples:
 
-	Browser.FocusedElement(); // used to implemented ShouldBeFocused(myInputCtrl)
-	Browser.WaitFor("isBrowserBusy() === false");
+	Browser.FocusedElement(); // used to implement ShouldBeFocused(myInputCtrl)
+	Browser.WaitFor("isBrowserBusy() === false"); // ensure you have installed js-test-integration in SeleniumExtension package.
 	var text = Browser.ScriptQuery<string>("return $(arguments[0]).text();", li);
 	var row = Browser.ScriptQuery<IWebElement>("return $k.tbody.find(\"tr[data-uid='" + dataItemUid + "']\").get(0);");
 	Browser.ScriptExecute(string.Format("$k.select({0});$k.trigger('change');", index));
@@ -37,10 +45,10 @@ Usage Samples:
 
 Usage Samples: 
 	
-	var items = browser.FindElementsByNgController("ItemController");
-	var productDiv = browser.FindElementByNgController("ProductController");
-	Browser.NgWaitFor(productDiv, "scope.Data.Id != 0");
-	var result = browser.NgScope<ProductViewModel>(productDiv, "Data");
+	var productDiv = browser.FindElement(browser, By.CssSelector("div[ng-controller='ProductController']"));
+	browser.NgWaitFor(productDiv, "scope.Data.Id != 0");
+	var result = browser.NgFetch<ProductViewModel>(productDiv, "scope.Data");
+		// FYI: "isolateScope" like the "scope" variable are predefined and available in your expression with ngFetch. 
 	
 	
 [Kendo Extensions](http://www.nuget.org/packages/RobustHaven.IntegrationTests.KendoExtensions/)  

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using OpenQA.Selenium;
-using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
 
 namespace RobustHaven.IntegrationTests.SeleniumExtensions
 {
@@ -16,7 +15,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 
 	public class PartialView<TViewModel> where TViewModel : class
 	{
-		public readonly WebTestContext WebTestContext;
+		public readonly WebScenarioContext WebTestContext;
 		public readonly IWebDriver WebDriver;
 		public readonly IWebElement PartialElement;
 
@@ -26,7 +25,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 
 		public bool ClearInputFirst { get; set; }
 
-		public PartialView(WebTestContext webTestContext, IWebDriver webDriver, IWebElement partialElement)
+		public PartialView(WebScenarioContext webTestContext, IWebDriver webDriver, IWebElement partialElement)
 		{
 			WebTestContext = webTestContext;
 			WebDriver = webDriver;

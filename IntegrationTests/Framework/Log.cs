@@ -1,15 +1,12 @@
-<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
-<#@ Output Extension="cs" #>
-using System;
+﻿using System;
 using System.Text;
-using RobustHaven.IntegrationTests.SeleniumExtensions.Core;
 
-namespace <#= Model.Namespace #>.Core
+namespace RobustHaven.IntegrationTests.Framework
 {
 	public class Log : ILog
 	{
 		private StringBuilder _stringBuilder = new StringBuilder();
-		
+
 		public Log()
 		{
 			IndentBy = 0;
