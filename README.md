@@ -94,9 +94,6 @@ Usage Samples:
 
 Usage Sample:
 
-	#used to init tests
-	Scaffold T4WithNUnit
-	
 	#used to generate an nunit test given a feature file
 	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
 	
