@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{2F6A9CA8-9815-4FCB-A7B2-502169CE1E39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgExtensions", "NgExtensions\NgExtensions.csproj", "{37E2B44E-F8EB-4E01-A73F-86F5CDEE7E8E}"
@@ -17,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{EDC318
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultDiff", "ResultDiff\ResultDiff.csproj", "{393AB837-93EC-4754-A725-CB6F4DE22903}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{BB019C7B-43E7-478C-A42C-D78418CAEE46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,10 @@ Global
 		{393AB837-93EC-4754-A725-CB6F4DE22903}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393AB837-93EC-4754-A725-CB6F4DE22903}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393AB837-93EC-4754-A725-CB6F4DE22903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB019C7B-43E7-478C-A42C-D78418CAEE46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB019C7B-43E7-478C-A42C-D78418CAEE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB019C7B-43E7-478C-A42C-D78418CAEE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB019C7B-43E7-478C-A42C-D78418CAEE46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,9 +15,19 @@ This framework uses a Queue of C# [Task][1], similar to [protractor](https://ang
 Feature  | Protractor  | RobustHaven.IntegrationTests
 ------------- | -------------
 Language  | JavaScript | C#
+Client Framework  | AngularJS Only | Any
 Test Framework | Jasmine | NUnit (custom Gherkin logger)
-Promise API  | Web Driver Promise | Task
+Run specific tests | --spec fileLevel.js | NUnit runners with granularity to a specific test
+Run specific suite | --suite | NUnit categories
+Promise API  | Web Driver Promise (protractor.promise) | Task
 Configuration | Conf.js | App.config
+
+
+Protractor maintains the [control flow](https://github.com/angular/protractor/blob/master/docs/control-flow.md) with a queue of promises that are dequeued and executed synchronously. External async tasks must be wrapped with a protractor.promise to ensure it is appended to the protractor queue.
+
+RobustHaven.IntegrationTests encourages all helper methods to return a C# Task so the caller, NUnit [Test] or composite helper methods, can arrange the resulting task into the control flow. 
+We do provide a Context.AddTask(...); queue similar to protractor but not necessarily needed as shown in the converted "Protractor Demo" below.
+
 
 
 
@@ -145,163 +155,98 @@ Scaffold your test scenarios individually or specify a feature file.
 	
 
 
-Replace the stubbed comments with actual code.
+Replace the stubbed comments with actual code.  [Sample from Protractor's Demo](https://angular.github.io/protractor/#/tutorial "Protractor Demo Sample") 
 			
-	using System.Linq;
-	using IntegrationTests.Core;
-	using IntegrationTests.Extensions;
-	using IntegrationTests.Kendo;
-	using NUnit.Framework;
-	using OpenQA.Selenium;
-	using RobustHaven.IntegrationTests.Attributes;
-	using RobustHaven.IntegrationTests.NgExtensions;
-	using RobustHaven.IntegrationTests.SeleniumExtensions;
-	using RobustHaven.IntegrationTests.SeleniumExtensions.Extensions;
-
-	namespace IntegrationTests.Flows
+	[TestFixture]
+	[Category("samples")]
+	[Feature("Protractor Tutorial")]
+	public class ProtractorTutorialTests : WebFeatureTestBase
 	{
-		[TestFixture]
-		[Category("New Case")]
-		[Category("filing")]
-		[Feature("Filing - Required A")]
-		public class Filing_RequiredAFeatureTests : FeatureTestBase
+		private IWebElement firstNumber;
+		private IWebElement secondNumber;
+		private IWebElement goButton;
+		private IWebElement latestResult;
+
+		public override void Background()
 		{
-			private FolderViewModel folderViewModel;
+			var task = Context.NavigateTo("http://juliemr.github.io/protractor-demo/");
+			task.RunSynchronously();
 
-			#region test helpers
+			firstNumber = Context.Browser.FindElement(NgBy.Model("first"));
+			secondNumber = Context.Browser.FindElement(NgBy.Model("second"));
+			goButton = Context.Browser.FindElement(By.Id("gobutton"));
+			latestResult = Context.Browser.FindElement(By.CssSelector("form h2.ng-binding"));
+		}
 
-			private IWebElement GetADiv()
+
+		[Test]
+		[Scenario("should have a title")]
+		public void should_have_a_title()
+		{
+			Assert.IsTrue(Context.Browser.Title.Equals("Super Calculator"));
+		}
+
+		[Test]
+		[Scenario("should add one and two")]
+		public void should_add_one_and_two()
+		{
+			firstNumber.SendKeys("1");
+			secondNumber.SendKeys("2");
+			goButton.Click();
+
+			Context.Browser.NgWaitFor(latestResult, @"/\.\s/.test(scope.latest) == false");
+
+			Assert.IsTrue(latestResult.Text.Equals("3"));
+		}
+
+		[Test]
+		[Scenario("should add four and six")]
+		public void should_add_four_and_six()
+		{
+			firstNumber.SendKeys("4");
+			secondNumber.SendKeys("6");
+			goButton.Click();
+
+			Context.Browser.NgWaitFor(latestResult, @"/\.\s/.test(scope.latest) == false");
+			Assert.IsTrue(latestResult.Text.Equals("10"));
+		}
+
+
+		// All helpers should return a Task.
+		// The caller can then arrange the helper task into the control flow.
+		public Task<double> Add(int num1, int num2)
+		{
+			return new Task<double>(() =>
 			{
-				var partialElement = Visitor.Context.Browser.FindElementByNgController("AController");
-				return partialElement;
-			}
+				firstNumber.SendKeys(num1.ToString());
+				secondNumber.SendKeys(num2.ToString());
+				goButton.Click();
 
-			private KendoGrid GetAGrid()
-			{
-				return new KendoGrid(Visitor.Context.Browser, GetADiv());
-			}
+				Context.Browser.NgWaitFor(latestResult, @"/\.\s/.test(scope.latest) == false");
 
-			#endregion
+				Assert.IsTrue(latestResult.Text.Equals((num1+num2).ToString()));
+				return double.Parse(latestResult.Text);
+			});
+		}
 
-			public override void Setup()
-			{
-				folderViewModel = new FolderViewModel()
-				{
-					Category_Id = 2,
-					LowerCourt_Id = 3,
-					OtherCaseNumber = "3223",
-					Title = "dfdf",
-					Attorney_Id = 3,
-				};
+		[Test]
+		[Scenario("should have a history")]
+		public void should_have_a_history()
+		{
+			Func<int> getCount = () => Context.Browser.NgFetch<int>(Context.Browser.FindElement(By.TagName("body")),
+				@"window.document.querySelectorAll(""tr[ng-repeat='result in memory']"").length");
 
-				base.Setup();
-			}
+			var tasks = new[] { Add(1, 2), Add(3, 4) }.ToList();
+			tasks.ForEach(x => {
+				x.RunSynchronously();
+			});
 
-			public override void Background()
-			{
-				Visitor.Context.Given(() =>
-				{
-					var startingUrl = Visitor.Context.ToAbsoluteUrl(t => t.Action("AddOrEdit", "C", new{area="SomeModule"}));
-					Visitor.Context.Browser.Navigate().GoToUrl(startingUrl);
-				}, "an authenticated user is on the create a new case screen");
+			Assert.IsTrue(getCount() == 2);
 
-				Visitor.Context.And(() =>
-				{
-					folderViewModel.Location_Id = 6; // washington
-				}, "user selects a location");
+			var task = Add(5, 6);
+			task.RunSynchronously();
 
-				Visitor.Context.And(() =>
-				{
-					folderViewModel.CaseType_Id = 1; // adult motor vehicle offenses
-				}, "user selects a case type");
-
-				Visitor.Context.Verified(() =>
-				{
-					Assert.IsTrue(GetAGrid().Total() == 0);
-				}, "A listing has zero items");
-
-				Visitor.Context.When(() =>
-				{
-					var partialElement = Visitor.Context.Browser.FindElementByNgController("CaseController");
-					var caseView = new MyPartialView<FolderViewModel>(Visitor.Context, Visitor.Context.Browser, partialElement)
-					{
-						ViewModel = folderViewModel,
-						ViewMode = ViewModes.EditorTemplate
-					};
-					caseView.Write();
-					caseView.SaveChanges();
-				}, "user submits the new case");
-			}
-		
-
-			[Test]
-			[Scenario("Required B are created")]
-			public void Required_B_are_created()
-			{
-				var action = new ExecActionView(ctx =>
-				{
-					ctx.Then(() =>
-					{
-						var count = GetAGrid().Total();
-						ctx.Verified(() => { Assert.IsTrue(count == 2); }, " {0} required B created for the washington location", count);
-					}, "the A listing will show required B that are based on the location and case type");
-				});
-
-				action.Execute(Visitor);
-			}
-
-
-			[Test]
-			[Scenario("Required B A type is read only when editing")]
-			public void Required_B_A_type_is_read_only_when_editing()
-			{
-				var action = new ExecActionView(ctx =>
-				{
-					ctx.And(() =>
-					{
-						var grid = GetAGrid();
-						grid.Select(1);
-					}, "user selects a required A");
-
-					ctx.Then(() =>
-					{
-						var element = GetADiv().FindElement(By.Id(ctx.ClientId<AViewModel>(x => x.AType_Id)));
-						var dropdown = new KendoDropDownList(ctx.Browser, element);
-
-						ctx.Verified(() => { Assert.IsFalse(dropdown.IsEnabled); }, "dropdown is disabled");
-
-					}, "the user will not be able to change the A type");
-				});
-
-				action.Execute(Visitor);
-			}
-
-
-
-			[Test]
-			[Scenario("Required A cannot be deleted")]
-			public void Required_A_cannot_be_deleted()
-			{
-				var action = new ExecActionView(ctx =>
-				{
-					ctx.Then(() =>
-					{
-						var grid = GetAGrid();
-						grid.Select(1);
-						var row = grid.Select().First();
-						var lastColumn = row.FindElement(By.CssSelector("td:last-of-type"));
-
-						ctx.Verified(() =>
-							{
-								Assert.Throws<NoSuchElementException>(() => lastColumn.FindElement(By.TagName("select")));
-							}, "drop down does not exist so user does not have the option to delete");
-						
-					}, "the user WILL NOT be able to delete the required B created");
-				});
-
-				action.Execute(Visitor);
-			}
-
+			Assert.IsTrue(getCount() == 3);
 		}
 	}
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using RobustHaven.IntegrationTests.Framework;
@@ -19,9 +21,29 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 			BaseUrl = baseUrl;
 		}
 
+		public Task NavigateTo(string url)
+		{
+			var task = new Task(() =>
+			{
+				Browser.Navigate().GoToUrl(url);
+				Browser.InjectSeleniumExt();
+			});
+			return task;
+		}
+		public Task<IWebElement> Element(By seleniumBy)
+		{
+			var task = new Task<IWebElement>(() => Browser.FindElement(seleniumBy));
+			return task;
+		}
+
+		public Task<ReadOnlyCollection<IWebElement>> Elements(By seleniumBy)
+		{
+			var task = new Task<ReadOnlyCollection<IWebElement>>(() => Browser.FindElements(seleniumBy));
+			return task;
+		}
+
 		public virtual void Given(Task execute, string message, params object[] args)
 		{
-            _controlFlow.Enqueue(execute);
 			Logger.Gherkin("Given", message, args);
 		}
 
@@ -45,8 +67,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 
 		public virtual void But(Task execute, string message, params object[] args)
 		{
-			_controlFlow.Enqueue(execute);
-			Logger.Gherkin(" But", message, args);
+			_controlFlow.Enqueue(execute.ContinueWith((task) => Logger.Gherkin(" But", message, args)));
 		}
 
 		public virtual void Info(Task execute, string message, params object[] args)
@@ -72,8 +93,7 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 			while (_controlFlow.Count > 0)
 			{
 				var task = _controlFlow.Dequeue();
-				task.Start();
-				task.Wait();
+				task.RunSynchronously();
 			}
 		}
 	}

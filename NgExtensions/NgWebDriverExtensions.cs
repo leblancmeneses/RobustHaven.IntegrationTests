@@ -10,7 +10,7 @@ namespace RobustHaven.IntegrationTests.NgExtensions
 	{
 		public static T NgFetch<T>(this IWebDriver driver, IWebElement element, string expression)
 		{
-            string script = string.Format(@"
+			string script = string.Format(@"
 var scope = angular.element(arguments[0]).scope();
 var isolateScope = angular.element(arguments[0]).isolateScope();
 return JSON.stringify({0});", expression);

@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -56,6 +60,22 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 				string script = string.Format(@"return {0};", conditionExpression);
 				result = driver.ScriptQuery<bool>(script, args);
 			} while (result == false);
+		}
+
+		public static void InjectSeleniumExt(this IWebDriver driver)
+		{
+			var type = typeof(WebDriverExtensions);
+			var assembly = type.Assembly;
+			string[] resourceNames = assembly.GetManifestResourceNames().Where(x=>Regex.IsMatch(x, @"RobustHaven\.IntegrationTests\.SeleniumExtensions\.js")).OrderBy(x=>x).ToArray();
+			foreach (string resourceName in resourceNames)
+			{
+				using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					string result = reader.ReadToEnd();
+					((IJavaScriptExecutor)driver).ExecuteScript(result);
+				}
+			}
 		}
 	}
 }

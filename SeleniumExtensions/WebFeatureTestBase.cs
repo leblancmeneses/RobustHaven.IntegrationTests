@@ -20,11 +20,11 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 		{
 			var selectedBrowser = ConfigurationManager.AppSettings["browser"];
 			var browsers = new Dictionary<string, IWebDriver>(){
-				{ "chrome", new ChromeDriver() },
+				//{ "chrome", new ChromeDriver() },
 				{ "firefox", new FirefoxDriver() },
-				{ "phantom", new PhantomJSDriver() },
-				{ "ie", new InternetExplorerDriver() },
-				{ "safari", new SafariDriver() },
+				//{ "phantom", new PhantomJSDriver() },
+				//{ "ie", new InternetExplorerDriver() },
+				//{ "safari", new SafariDriver() },
 				//new EventFiringWebDriver(),
 				//new RemoteWebDriver(new Uri(), new DesiredCapabilities())
 			};
@@ -57,6 +57,10 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 				// That's fine.
 			}
 			catch (WebDriverException)
+			{
+				// no confirm dialog
+			}
+			catch (InvalidOperationException)
 			{
 				// no confirm dialog
 			}
