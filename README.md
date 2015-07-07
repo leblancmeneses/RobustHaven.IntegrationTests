@@ -12,15 +12,16 @@ This framework uses a Queue of C# [Task][1], similar to [protractor](https://ang
 
 [1]: https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx
 
-Feature  | Protractor  | RobustHaven.IntegrationTests
-------------- | -------------
-Language  | JavaScript | C#
-Client Framework  | AngularJS Only | Any
-Test Framework | Jasmine | NUnit (custom Gherkin logger)
-Run specific tests | --spec fileLevel.js | NUnit runners with granularity to a specific test
-Run specific suite | --suite | NUnit categories
-Promise API  | Web Driver Promise (protractor.promise) | Task
-Configuration | Conf.js | App.config
+
+| Feature  | Protractor  | RobustHaven.IntegrationTests |
+|------------- | ------------- | ------------- |
+| Language  | JavaScript | C# |
+| Client Framework  | AngularJS Only | Any |
+| Test Framework | Jasmine | NUnit (custom Gherkin logger) |
+| Run specific tests | --spec fileLevel.js | NUnit runners with granularity to a specific test |
+| Run specific suite | --suite | NUnit categories |
+| Promise API  | Web Driver Promise (protractor.promise) | Task |
+| Configuration | Conf.js | App.config |
 
 
 Protractor maintains the [control flow](https://github.com/angular/protractor/blob/master/docs/control-flow.md) with a queue of promises that are dequeued and executed synchronously. External async tasks must be wrapped with a protractor.promise to ensure it is appended to the protractor queue.
