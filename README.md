@@ -144,10 +144,6 @@ Install the T4WithNUnitTest package to help init your test project.
 
 Scaffold your test scenarios individually or specify a feature file.
 
-
-	#init the integration test framework
-	Scaffold T4WithNUnit
-
 	#see T4WithNUnit Extensions usage samples above
 	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
 	
