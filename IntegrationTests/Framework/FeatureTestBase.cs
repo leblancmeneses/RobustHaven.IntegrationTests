@@ -9,6 +9,11 @@ namespace RobustHaven.IntegrationTests.Framework
 	{
 		protected ILog Log;
 
+		protected FeatureTestBase()
+		{
+			Log = IntegrationTestsServiceFactory.Logger();
+		}
+
 		[SetUp]
 		public virtual void Setup()
 		{
@@ -25,8 +30,6 @@ namespace RobustHaven.IntegrationTests.Framework
 				.GetCustomAttributes(true)
 				.OfType<ScenarioAttribute>()
 				.Single();
-
-			Log = IntegrationTestsServiceFactory.Logger();
 
 			Log.Info("***** Test: {0}:{1}", name, scenario.Name);
 			

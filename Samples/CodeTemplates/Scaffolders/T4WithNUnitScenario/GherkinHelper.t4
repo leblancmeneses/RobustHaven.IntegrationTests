@@ -12,45 +12,40 @@
 				{
 					case "Given":
 #>
-			ctx.Given(() =>
-			{
-
-			}, "<#=msg.Replace("\"", "\\\"") #>");
+			Context.Given(new Task(() => {
+				
+			}), "<#=msg.Replace("\"", "\\\"") #>");
 <#+
 						break;
 					case "When":
 #>
-			ctx.When(() =>
-			{
+			Context.When(new Task(() => {
 						
-			}, "<#=msg.Replace("\"", "\\\"") #>");
+			}), "<#=msg.Replace("\"", "\\\"") #>");
 <#+
 						break;
 					case "Then":
 #>
-			ctx.Then(() =>
-			{
+			Context.Then(new Task(() => {
 						
-			}, "<#=msg.Replace("\"", "\\\"") #>");
+			}), "<#=msg.Replace("\"", "\\\"") #>");
 <#+
 						break;
 					case "But":
 #>
-					ctx.But(() =>
-					{
+					Context.But(new Task(() => {
 							
-					}, "<#=msg.Replace("\"", "\\\"") #>");
+					}), "<#=msg.Replace("\"", "\\\"") #>");
 <#+
 						break;
 					case "And":
 #>
-					ctx.And(() =>
-					{
+					Context.And(new Task(() => {
 							
-					}, "<#=msg.Replace("\"", "\\\"") #>");
+					}), "<#=msg.Replace("\"", "\\\"") #>");
 <#+
 						break;
-					default:break;
+					default: break;
 				}
 			}
 	}

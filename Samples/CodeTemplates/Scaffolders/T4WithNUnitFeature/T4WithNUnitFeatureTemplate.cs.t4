@@ -1,5 +1,5 @@
 <#@ Template debug="false" Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
-<#@ assembly name="$(TargetDir)NPEG.dll" #>
+<#@ assembly name="F:\git-rh\RobustHaven.IntegrationTests\packages\NPEG.1.7.1\lib\NPEG.dll" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -16,51 +16,43 @@
 <#
 var feature = GetFromFile(Model.InputFilePath);
 #>
-using <#= Model.Namespace #>.Core;
 using NUnit.Framework;
+using System.Threading.Tasks;
 using RobustHaven.IntegrationTests.Attributes;
 using RobustHaven.IntegrationTests.SeleniumExtensions;
-using RobustHaven.IntegrationTests.SeleniumExtensions.Extensions;
 
 namespace <#= Model.Namespace #>
-{ 
-
+{
 	[TestFixture]
 	<#foreach (var tag in feature.Tags){#>[Category("<#=tag#>")]<#}#>
 
 	[Feature("<#=Text(feature.Title)#>")]
-	public class <#=CodeLabel(feature.Title)#>FeatureTests : FeatureTestBase
-	{
-	<#
+	public class <#=CodeLabel(feature.Title)#>FeatureTests : WebFeatureTestBase
+	{<#
 if (feature.Background != null)
 {#>
+
 		public override void Background()
 		{
-	
-
 <#
 	foreach (var statement in feature.Background.Gherkin)
 	{
 		if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase))
-		{#>
-			Visitor.Context.Given("<#=Text(statement.Message)#>");
-		<#}
+		{
+		#>			Context.Given(new Task(() => { }), "<#=Text(statement.Message)#>");
+<#}
 		if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase))
-		{#>
-			Visitor.Context.When("<#=Text(statement.Message)#>");
-		<#}
+		{#>			Context.When(new Task(() => { }), "<#=Text(statement.Message)#>");
+<#}
 		if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
-		{#>
-			Visitor.Context.Then("<#=Text(statement.Message)#>");
-		<#}
+		{#>			Context.Then(new Task(() => { }), "<#=Text(statement.Message)#>");
+<#}
 		if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase))
-		{#>
-			Visitor.Context.And("<#=Text(statement.Message)#>");
-		<#}
+		{#>				Context.And(new Task(() => { }), "<#=Text(statement.Message)#>");
+<#}
 		if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase))
-		{#>
-			Visitor.Context.But(@"<#=Text(statement.Message)#>");
-		<#}
+		{#>				Context.But(new Task(() => { }), @"<#=Text(statement.Message)#>");
+<#}
 	}
 #>
 		}
@@ -73,43 +65,39 @@ if (feature.Background != null)
 		[Test]
 		[Scenario("<#=Text(scenario.Title) #>")]
 		public void <#=CodeLabel(scenario.Title)#>()
-		{
-			var action = new ExecActionView(ctx =>
-			{<#foreach (var statement in scenario.Gherkin){
-	if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase)){#>
+		{<#foreach (var statement in scenario.Gherkin){
+	if (statement.Key.Equals("Given", StringComparison.InvariantCultureIgnoreCase)){
+#>
 
-				ctx.Given(() =>
-				{
+			Context.Given(new Task(() => {
+				
+			}), "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase)){
+#>
 
-				}, "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("When", StringComparison.InvariantCultureIgnoreCase)){#>
+			Context.When(new Task(() => {
+			
+			}), "<#=Text(statement.Message) #>");<#}	if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase)){
 
+#>
 
-				ctx.When(() =>
-				{
-						
-				}, "<#=Text(statement.Message) #>");<#}	if (statement.Key.Equals("Then", StringComparison.InvariantCultureIgnoreCase)){#>
+			Context.Then(new Task(() => {
 
+			}), "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase)){
 
-				ctx.Then(() =>
-				{
-						
-				}, "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("And", StringComparison.InvariantCultureIgnoreCase)){#>
+#>
 
+				Context.And(new Task(() => {
+				
+				}), "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase)){
 
-					ctx.And(() =>
-					{
-							
-					}, "<#=Text(statement.Message) #>");<#}if (statement.Key.Equals("But", StringComparison.InvariantCultureIgnoreCase)){#>
+#>
 
+				Context.But(new Task(() => {
+					
+				}), "<#=Text(statement.Message) #>");<#}}
+#>
 
-					ctx.But(() =>
-					{
-							
-					}, "<#=Text(statement.Message) #>");<#}}#>
-
-			});
-
-			action.Execute(Visitor);
+			Context.AddTask(new Task(() => { }));
 		}
 <#}#>
 

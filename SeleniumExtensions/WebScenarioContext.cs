@@ -30,20 +30,10 @@ namespace RobustHaven.IntegrationTests.SeleniumExtensions
 			});
 			return task;
 		}
-		public Task<IWebElement> Element(By seleniumBy)
-		{
-			var task = new Task<IWebElement>(() => Browser.FindElement(seleniumBy));
-			return task;
-		}
-
-		public Task<ReadOnlyCollection<IWebElement>> Elements(By seleniumBy)
-		{
-			var task = new Task<ReadOnlyCollection<IWebElement>>(() => Browser.FindElements(seleniumBy));
-			return task;
-		}
 
 		public virtual void Given(Task execute, string message, params object[] args)
 		{
+			_controlFlow.Enqueue(execute);
 			Logger.Gherkin("Given", message, args);
 		}
 

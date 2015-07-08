@@ -18,11 +18,11 @@ This framework uses a Queue of C# [Task][1], similar to [protractor](https://ang
 | Language  | JavaScript | C# |
 | Client Framework  | AngularJS Only | Any |
 | Test Framework | Jasmine | NUnit (custom Gherkin logger) |
+| Promise API  | Web Driver Promise (protractor.promise) | Task |
+| Debugging | browser.pause() Or node debugger | Visual Studio breakpoints |
 | Run specific tests | --spec fileLevel.js | NUnit runners with granularity to a specific test |
 | Run specific suite | --suite | NUnit categories |
-| Promise API  | Web Driver Promise (protractor.promise) | Task |
 | Configuration | Conf.js | App.config |
-
 
 Protractor maintains the [control flow](https://github.com/angular/protractor/blob/master/docs/control-flow.md) with a queue of promises that are dequeued and executed synchronously. External async tasks must be wrapped with a protractor.promise to ensure it is appended to the protractor queue.
 
@@ -92,18 +92,19 @@ Usage Samples:
 	Install-Package RobustHaven.IntegrationTests.T4WithNUnit
 	
 
-Usage Sample:
+Package Manager Console Usage Sample:
+	Install-Package RobustHaven.IntegrationTests.T4WithNUnit
 
 	#used to generate an nunit test given a feature file
 	Scaffold T4WithNUnitFeature "Gherkin\Template.feature" -Force
 	
 	#used to generate an nunit test given a scenario string
-	Scaffold T4WithNUnitScenario -Force -HowToGenerate:"test|leaf|composite" "Scenario:	Discoverable favorite feature for products `
+	Scaffold T4WithNUnitScenario -Force -Scenario ("Scenario:	Discoverable favorite feature for products `
 	Given there are zero favorited products for user `
 	 And user is at My XX page `
 	When user selects the dropdown for new XX `
 	Then they will get a prompt 'You have not favorited any products.' `
-	 And 'products' text is link to My Products page" 
+	 And 'products' text is link to My Products page")
 	 
 	
 	
@@ -137,10 +138,16 @@ Create a Gherkin describing the feature you plan to build.  [Gherkin Language](h
 
 ### Step 2: nunit - no additional pluggins required for visual studio
 
-Install the T4WithNUnitTest package to help init your test project.
+Initialize your test project.
 
 	Install-Package RobustHaven.IntegrationTests.SeleniumExtensions 
+	
+Optional Packages:
+
+	Install-Package RobustHaven.IntegrationTests.NgExtensions 
+	Install-Package RobustHaven.IntegrationTests.KendoExtensions 
 	Install-Package RobustHaven.IntegrationTests.T4WithNUnit
+	
 
 Scaffold your test scenarios individually or specify a feature file.
 

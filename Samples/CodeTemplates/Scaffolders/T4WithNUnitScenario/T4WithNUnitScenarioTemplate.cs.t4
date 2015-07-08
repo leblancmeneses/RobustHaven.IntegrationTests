@@ -1,0 +1,36 @@
+<#@ Template Language="C#" HostSpecific="True" Inherits="DynamicTransform" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ Output Extension="cs" #>
+<#@ Include file="GherkinHelper.t4" #>
+<#
+var scenario = Model.Scenario.Trim();
+
+var title = string.Empty;
+var match = Regex.Match(scenario, @"^Scenario:\s*(?<Title>.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+if(match.Success)
+{
+	title = match.Groups["Title"].Value.Trim();
+}
+#>
+using NUnit.Framework;
+using System.Threading.Tasks;
+using RobustHaven.IntegrationTests.Attributes;
+using RobustHaven.IntegrationTests.SeleniumExtensions;
+
+
+
+namespace <#= Model.Namespace #>
+{
+	[TestFixture]
+	[Category("ScaffoldTest")]
+	[Feature("XScenario")]
+	public class _XScenarioTests : WebFeatureTestBase
+	{
+		[Test]
+		[Scenario("<#=title #>")]
+		public void <#=Regex.Replace(title, "[^a-zA-Z0-9 ]", string.Empty).Replace(" ", "_") #>()
+		{
+<# Gherkin(scenario); #>
+		}
+	}
+}
