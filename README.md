@@ -112,8 +112,10 @@ Package Manager Console Usage Sample:
 
 	
 # How do you start?
-	
-###  Step 1: Gherkin + balsamiq mockups
+
+Use the next five steps as a guide or view the [quickstart sample](https://github.com/leblancmeneses/RobustHaven.IntegrationTests/tree/master/Samples).
+
+###  Step 1: Gherkin + mockups
 
 Create a Gherkin describing the feature you plan to build.  [Gherkin Language](http://docs.behat.org/guides/1.gherkin.html "Gherkin Language") 
 
