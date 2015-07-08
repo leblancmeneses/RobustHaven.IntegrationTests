@@ -37,7 +37,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RobustHaven.IntegrationTests, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.2.0.0\lib\RobustHaven.IntegrationTests.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.2.0.1\lib\RobustHaven.IntegrationTests.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

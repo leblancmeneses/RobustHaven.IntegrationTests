@@ -50,15 +50,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="RobustHaven.IntegrationTests, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.2.0.0\lib\RobustHaven.IntegrationTests.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.2.0.1\lib\RobustHaven.IntegrationTests.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RobustHaven.IntegrationTests.NgExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.NgExtensions.2.0.0\lib\RobustHaven.IntegrationTests.NgExtensions.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.NgExtensions.2.0.1\lib\RobustHaven.IntegrationTests.NgExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RobustHaven.IntegrationTests.SeleniumExtensions, Version=1.6.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.2.0.0\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
+      <HintPath>..\packages\RobustHaven.IntegrationTests.SeleniumExtensions.2.0.1\lib\RobustHaven.IntegrationTests.SeleniumExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -92,7 +92,7 @@
     <None Include="CodeTemplates\Scaffolders\T4WithNUnitScenario\T4WithNUnitScenario.ps1" />
     <None Include="CodeTemplates\Scaffolders\T4WithNUnitScenario\T4WithNUnitScenarioTemplate.cs.t4" />
     <None Include="packages.config" />
-    <None Include="Template.feature" />
+    <None Include="Gherkin\Template.feature" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="chromedriver.exe">
