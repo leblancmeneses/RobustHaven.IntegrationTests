@@ -20,7 +20,7 @@ This framework uses a Queue of C# [Task][1], similar to [protractor](https://ang
 | Test Framework | Jasmine | NUnit (custom Gherkin logger) |
 | Promise API  | Web Driver Promise (protractor.promise) | Task |
 | Debugging | browser.pause() Or node debugger | Visual Studio breakpoints |
-| Run specific tests | --spec fileLevel.js | NUnit runners with granularity to a specific test |
+| Run specific tests | --spec fileLevel.js and xdescribe, xit | NUnit runners with granularity to a specific test |
 | Run specific suite | --suite | NUnit categories |
 | Configuration | Conf.js | App.config |
 
